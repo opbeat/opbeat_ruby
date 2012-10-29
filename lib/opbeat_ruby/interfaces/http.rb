@@ -1,16 +1,18 @@
-require 'raven/interfaces'
+require 'opbeat_ruby/interfaces'
 
-module Raven
+module OpbeatRuby
 
   class HttpInterface < Interface
 
-    name 'sentry.interfaces.Http'
+    name 'http'
     property :url, :required => true
     property :method, :required => true
     property :data
     property :query_string
     property :cookies
     property :headers
+    property :remote_host
+    property :http_host
     property :env
 
     def initialize(*arguments)
@@ -25,6 +27,9 @@ module Raven
       self.url = req.url.split('?').first
       self.method = req.request_method
       self.query_string = req.query_string
+      self.cookies = req.cookies.collect {|k,v| "#{k}=#{v}"}.join(';')
+      self.remote_host = req.ip
+      self.http_host = req.host_with_port
       env.each_pair do |key, value|
         next unless key.upcase == key # Non-upper case stuff isn't either
         if key.start_with?('HTTP_')

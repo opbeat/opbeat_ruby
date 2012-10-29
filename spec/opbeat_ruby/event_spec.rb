@@ -1,14 +1,14 @@
 require File::expand_path('../../spec_helper', __FILE__)
-require 'raven'
+require 'opbeat_ruby'
 
-describe Raven::Event do
+describe OpbeatRuby::Event do
   describe '.capture_message' do
     let(:message) { 'This is a message' }
-    let(:hash) { Raven::Event.capture_message(message).to_hash }
+    let(:hash) { OpbeatRuby::Event.capture_message(message).to_hash }
 
     context 'for a Message' do
       it 'returns an event' do
-        Raven::Event.capture_message(message).should be_a(Raven::Event)
+        OpbeatRuby::Event.capture_message(message).should be_a(OpbeatRuby::Event)
       end
 
       it "sets the message to the value passed" do
@@ -16,7 +16,7 @@ describe Raven::Event do
       end
 
       it 'has level ERROR' do
-        hash['level'].should == 40
+        hash['level'].should == 'error'
       end
     end
   end
@@ -24,50 +24,49 @@ describe Raven::Event do
   describe '.capture_exception' do
     let(:message) { 'This is a message' }
     let(:exception) { Exception.new(message) }
-    let(:hash) { Raven::Event.capture_exception(exception).to_hash }
+    let(:hash) { OpbeatRuby::Event.capture_exception(exception).to_hash }
 
     context 'for an Exception' do
       it 'returns an event' do
-        Raven::Event.capture_exception(exception).should be_a(Raven::Event)
+        OpbeatRuby::Event.capture_exception(exception).should be_a(OpbeatRuby::Event)
       end
 
       it "sets the message to the exception's message and type" do
         hash['message'].should == "Exception: #{message}"
       end
 
-      # sentry uses python's logging values; 40 is the value of logging.ERROR
       it 'has level ERROR' do
-        hash['level'].should == 40
+        hash['level'].should == 'error'
       end
 
       it 'uses the exception class name as the exception type' do
-        hash['sentry.interfaces.Exception']['type'].should == 'Exception'
+        hash['exception']['type'].should == 'Exception'
       end
 
       it 'uses the exception message as the exception value' do
-        hash['sentry.interfaces.Exception']['value'].should == message
+        hash['exception']['value'].should == message
       end
 
       it 'does not belong to a module' do
-        hash['sentry.interfaces.Exception']['module'].should == ''
+        hash['exception']['module'].should == ''
       end
     end
 
     context 'for a nested exception type' do
-      module Raven::Test
+      module OpbeatRuby::Test
         class Exception < Exception; end
       end
-      let(:exception) { Raven::Test::Exception.new(message) }
+      let(:exception) { OpbeatRuby::Test::Exception.new(message) }
 
       it 'sends the module name as part of the exception info' do
-        hash['sentry.interfaces.Exception']['module'].should == 'Raven::Test'
+        hash['exception']['module'].should == 'OpbeatRuby::Test'
       end
     end
 
-    context 'for a Raven::Error' do
-      let(:exception) { Raven::Error.new }
+    context 'for a OpbeatRuby::Error' do
+      let(:exception) { OpbeatRuby::Error.new }
       it 'does not create an event' do
-        Raven::Event.capture_exception(exception).should be_nil
+        OpbeatRuby::Event.capture_exception(exception).should be_nil
       end
     end
 
@@ -82,14 +81,14 @@ describe Raven::Event do
       end
 
       it 'parses the backtrace' do
-        hash['sentry.interfaces.Stacktrace']['frames'].length.should == 2
-        hash['sentry.interfaces.Stacktrace']['frames'][0]['lineno'].should == 1412
-        hash['sentry.interfaces.Stacktrace']['frames'][0]['function'].should == 'other_function'
-        hash['sentry.interfaces.Stacktrace']['frames'][0]['filename'].should == '/some/other/path'
+        hash['stacktrace']['frames'].length.should == 2
+        hash['stacktrace']['frames'][0]['lineno'].should == 1412
+        hash['stacktrace']['frames'][0]['function'].should == 'other_function'
+        hash['stacktrace']['frames'][0]['filename'].should == '/some/other/path'
 
-        hash['sentry.interfaces.Stacktrace']['frames'][1]['lineno'].should == 22
-        hash['sentry.interfaces.Stacktrace']['frames'][1]['function'].should == 'function_name'
-        hash['sentry.interfaces.Stacktrace']['frames'][1]['filename'].should == '/path/to/some/file'
+        hash['stacktrace']['frames'][1]['lineno'].should == 22
+        hash['stacktrace']['frames'][1]['function'].should == 'function_name'
+        hash['stacktrace']['frames'][1]['filename'].should == '/path/to/some/file'
       end
 
       it "sets the culprit" do
@@ -106,7 +105,7 @@ describe Raven::Event do
         end
 
         it 'strips prefixes in the load path from frame filenames' do
-          hash['sentry.interfaces.Stacktrace']['frames'][0]['filename'].should == 'other/path'
+          hash['stacktrace']['frames'][0]['filename'].should == 'other/path'
         end
       end
     end

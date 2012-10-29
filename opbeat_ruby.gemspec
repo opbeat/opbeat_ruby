@@ -1,14 +1,14 @@
 $:.unshift File.expand_path('../lib', __FILE__)
-require 'raven/version'
+require 'opbeat_ruby/version'
 
 Gem::Specification.new do |gem|
-  gem.name = "sentry-raven"
-  gem.version = Raven::VERSION
+  gem.name = "opbeat_ruby"
+  gem.version = OpbeatRuby::VERSION
   gem.platform = Gem::Platform::RUBY
-  gem.summary = "A gem that provides a client interface for the Sentry error logger"
-  gem.email = "noah@coderanger.net"
-  gem.homepage = "http://github.com/getsentry/raven-ruby"
-  gem.authors = ["Noah Kantrowitz"]
+  gem.summary = "A gem that provides a client interface for the Opbeat error logger"
+  gem.email = "ron@opbeat.com"
+  gem.homepage = "http://github.com/opbeat/opbeat_ruby"
+  gem.authors = ["Noah Kantrowitz", "Ron Cohen"]
   gem.has_rdoc = true
   gem.extra_rdoc_files = ["README.md", "LICENSE"]
   gem.files = Dir['lib/**/*']

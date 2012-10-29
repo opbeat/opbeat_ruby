@@ -1,10 +1,10 @@
-require 'raven/interfaces'
+require 'opbeat_ruby/interfaces'
 
-module Raven
+module OpbeatRuby
 
   class MessageInterface < Interface
 
-    name 'sentry.interfaces.Message'
+    name 'param_message'
     property :message, :required => true
     property :params
 

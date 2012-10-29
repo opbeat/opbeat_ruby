@@ -1,10 +1,10 @@
-require 'raven/interfaces'
+require 'opbeat_ruby/interfaces'
 
-module Raven
+module OpbeatRuby
 
   class ExceptionInterface < Interface
 
-    name 'sentry.interfaces.Exception'
+    name 'exception'
     property :type, :required => true
     property :value, :required => true
     property :module

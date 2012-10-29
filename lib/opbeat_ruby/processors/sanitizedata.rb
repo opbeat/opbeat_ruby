@@ -1,6 +1,6 @@
-require 'raven/processor'
+require 'opbeat_ruby/processor'
 
-module Raven
+module OpbeatRuby
   module Processor
     class SanitizeData < Processor
 

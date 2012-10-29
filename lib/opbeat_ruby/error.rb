@@ -1,4 +1,4 @@
-module Raven
+module OpbeatRuby
 
   class Error < StandardError
   end

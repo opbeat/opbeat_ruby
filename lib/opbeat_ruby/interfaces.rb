@@ -1,6 +1,6 @@
 require 'hashie'
 
-module Raven
+module OpbeatRuby
 
   INTERFACES = {}
 

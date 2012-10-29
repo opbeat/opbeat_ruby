@@ -1,7 +1,7 @@
 require 'rake'
 require 'rubygems/package_task'
 
-gemspec = eval(IO.read('sentry-raven.gemspec'))
+gemspec = eval(IO.read('opbeat_ruby.gemspec'))
 
 Gem::PackageTask.new(gemspec).define
 

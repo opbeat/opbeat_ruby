@@ -1,4 +1,4 @@
-module Raven
+module OpbeatRuby
 
   module Processor
     class Processor

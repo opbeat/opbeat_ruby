@@ -1,12 +1,12 @@
 require 'hashie'
 
-require 'raven/interfaces'
+require 'opbeat_ruby/interfaces'
 
-module Raven
+module OpbeatRuby
 
   class StacktraceInterface < Interface
 
-    name 'sentry.interfaces.Stacktrace'
+    name 'stacktrace'
     property :frames, :default => []
 
     def initialize(*arguments)

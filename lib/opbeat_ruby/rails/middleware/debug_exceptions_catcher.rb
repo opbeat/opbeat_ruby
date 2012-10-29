@@ -1,4 +1,4 @@
-module Raven
+module OpbeatRuby
   module Rails
     module Middleware
       module DebugExceptionsCatcher
@@ -7,8 +7,13 @@ module Raven
         end
 
         def render_exception_with_raven(env, exception)
-          evt = Raven::Event.capture_rack_exception(exception, env)
-          Raven.send(evt) if evt
+          begin
+            evt = OpbeatRuby::Event.capture_rack_exception(exception, env)
+            OpbeatRuby.send(evt) if evt
+          rescue
+            ::Rails::logger.debug "Error capturing or sending exception #{$!}"
+          end
+
           render_exception_without_raven(env, exception)
         end
       end

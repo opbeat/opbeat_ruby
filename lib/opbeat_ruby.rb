@@ -1,25 +1,25 @@
-require 'raven/version'
-require 'raven/configuration'
-require 'raven/logger'
-require 'raven/client'
-require 'raven/event'
-require 'raven/rack'
-require 'raven/interfaces/message'
-require 'raven/interfaces/exception'
-require 'raven/interfaces/stack_trace'
-require 'raven/interfaces/http'
-require 'raven/processors/sanitizedata'
+require 'opbeat_ruby/version'
+require 'opbeat_ruby/configuration'
+require 'opbeat_ruby/logger'
+require 'opbeat_ruby/client'
+require 'opbeat_ruby/event'
+require 'opbeat_ruby/rack'
+require 'opbeat_ruby/interfaces/message'
+require 'opbeat_ruby/interfaces/exception'
+require 'opbeat_ruby/interfaces/stack_trace'
+require 'opbeat_ruby/interfaces/http'
+require 'opbeat_ruby/processors/sanitizedata'
 
-require 'raven/railtie' if defined?(Rails::Railtie)
+require 'opbeat_ruby/railtie' if defined?(Rails::Railtie)
 
-module Raven
+module OpbeatRuby
   class << self
     # The client object is responsible for delivering formatted data to the Sentry server.
-    # Must respond to #send. See Raven::Client.
+    # Must respond to #send. See OpbeatRuby::Client.
     attr_accessor :client
 
-    # A Raven configuration object. Must act like a hash and return sensible
-    # values for all Raven configuration options. See Raven::Configuration.
+    # A OpbeatRuby configuration object. Must act like a hash and return sensible
+    # values for all OpbeatRuby configuration options. See OpbeatRuby::Configuration.
     attr_writer :configuration
 
     def logger
@@ -28,11 +28,11 @@ module Raven
 
     # Tell the log that the client is good to go
     def report_ready
-      self.logger.info "Raven #{VERSION} ready to catch errors"
+      self.logger.info "OpbeatRuby #{VERSION} ready to catch errors"
     end
 
     # The configuration object.
-    # @see Raven.configure
+    # @see OpbeatRuby.configure
     def configuration
       @configuration ||= Configuration.new
     end
@@ -40,7 +40,7 @@ module Raven
     # Call this method to modify defaults in your initializers.
     #
     # @example
-    #   Raven.configure do |config|
+    #   OpbeatRuby.configure do |config|
     #     config.server = 'http://...'
     #   end
     def configure(silent = false)
@@ -53,8 +53,8 @@ module Raven
     # Send an event to the configured Sentry server
     #
     # @example
-    #   evt = Raven::Event.new(:message => "An error")
-    #   Raven.send(evt)
+    #   evt = OpbeatRuby::Event.new(:message => "An error")
+    #   OpbeatRuby.send(evt)
     def send(evt)
       @client.send(evt) if @client
     end
@@ -63,7 +63,7 @@ module Raven
     # no block is given
     #
     # @example
-    #   Raven.capture do
+    #   OpbeatRuby.capture do
     #     MyApp.run
     #   end
     def capture(&block)
@@ -71,7 +71,7 @@ module Raven
         begin
           block.call
         rescue Error => e
-          raise # Don't capture Raven errors
+          raise # Don't capture OpbeatRuby errors
         rescue Exception => e
           self.captureException(e)
           raise

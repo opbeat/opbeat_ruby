@@ -1,16 +1,13 @@
-module Raven
+module OpbeatRuby
   class Configuration
 
     # Base URL of the Sentry server
     attr_accessor :server
 
-    # Public key for authentication with the Sentry server
-    attr_accessor :public_key
+    # Secret access token for authentication with Opbeat
+    attr_accessor :access_token
 
-    # Secret key for authentication with the Sentry server
-    attr_accessor :secret_key
-
-    # Project ID number to send to the Sentry server
+    # Project ID to use with Opbeat
     attr_accessor :project_id
 
     # Logger to use internally
@@ -34,32 +31,34 @@ module Raven
     attr_reader :current_environment
 
     def initialize
-      self.server = ENV['SENTRY_DSN'] if ENV['SENTRY_DSN']
+      self.server = ENV['OPBEAT_SERVER'] || "https://opbeat.com"
+      self.access_token = ENV['OPBEAT_ACCESS_TOKEN'] if ENV['OPBEAT_ACCESS_TOKEN']
+      self.project_id = ENV['OPBEAT_PROJECT_ID'] if ENV['OPBEAT_PROJECT_ID']
       @context_lines = 3
       self.environments = %w[ production ]
       self.current_environment = ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
       self.send_modules = true
       self.excluded_exceptions = []
-      self.processors = [Raven::Processor::SanitizeData]
+      self.processors = [OpbeatRuby::Processor::SanitizeData]
     end
 
-    def server=(value)
-      uri = URI::parse(value)
-      if uri.user
-        # DSN-style string
-        uri_path = uri.path.split('/')
-        @project_id = uri_path.pop
-        @server = "#{uri.scheme}://#{uri.host}"
-        @server << ":#{uri.port}" unless uri.port == {'http'=>80,'https'=>443}[uri.scheme]
-        @server << uri_path.join('/')
-        @public_key = uri.user
-        @secret_key = uri.password
-      else
-        @server = value
-      end
-    end
+    # def server=(value)
+    #   uri = URI::parse(value)
+    #   if uri.user
+    #     # DSN-style string
+    #     uri_path = uri.path.split('/')
+    #     @project_id = uri_path.pop
+    #     @server = "#{uri.scheme}://#{uri.host}"
+    #     @server << ":#{uri.port}" unless uri.port == {'http'=>80,'https'=>443}[uri.scheme]
+    #     @server << uri_path.join('/')
+    #     @public_key = uri.user
+    #     @secret_key = uri.password
+    #   else
+    #     @server = value
+    #   end
+    # end
 
-    alias_method :dsn=, :server=
+    # alias_method :dsn=, :server=
 
     # Allows config options to be read like a hash
     #

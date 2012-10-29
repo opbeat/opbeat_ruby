@@ -2,19 +2,19 @@ require 'rubygems'
 require 'socket'
 require 'uuidtools'
 
-require 'raven/error'
-require 'raven/linecache'
+require 'opbeat_ruby/error'
+require 'opbeat_ruby/linecache'
 
-module Raven
+module OpbeatRuby
 
   class Event
 
     LOG_LEVELS = {
-      "debug" => 10,
-      "info" => 20,
-      "warn" => 30,
-      "warning" => 30,
-      "error" => 40,
+      "debug" => "debug",
+      "info" => "info",
+      "warn" => "warn",
+      "warning" => "warn",
+      "error" => "error",
     }
 
     BACKTRACE_RE = /^(.+?):(\d+)(?::in `(.+?)')?$/
@@ -24,7 +24,7 @@ module Raven
     attr_accessor :logger, :culprit, :server_name, :modules, :extra
 
     def initialize(options={}, configuration=nil, &block)
-      @configuration = configuration || Raven.configuration
+      @configuration = configuration || OpbeatRuby.configuration
       @interfaces = {}
 
       @id = options[:id] || UUIDTools::UUID.random_create.hexdigest
@@ -58,7 +58,8 @@ module Raven
     end
 
     def interface(name, value=nil, &block)
-      int = Raven::find_interface(name)
+      int = OpbeatRuby::find_interface(name)
+      OpbeatRuby.logger.info "Unknown interface: #{name}" unless int
       raise Error.new("Unknown interface: #{name}") unless int
       @interfaces[int.name] = int.new(value, &block) if value || block
       @interfaces[int.name]
@@ -74,16 +75,14 @@ module Raven
 
     def to_hash
       data = {
-        'event_id' => self.id,
+        'client_supplied_id' => self.id,
         'message' => self.message,
         'timestamp' => self.timestamp,
         'level' => self.level,
-        'project' => self.project,
         'logger' => self.logger,
       }
       data['culprit'] = self.culprit if self.culprit
       data['server_name'] = self.server_name if self.server_name
-      data['modules'] = self.modules if self.modules
       data['extra'] = self.extra if self.extra
       @interfaces.each_pair do |name, int_data|
         data[name] = int_data.to_hash
@@ -92,14 +91,14 @@ module Raven
     end
 
     def self.capture_exception(exc, configuration=nil, &block)
-      configuration ||= Raven.configuration
-      if exc.is_a?(Raven::Error)
+      configuration ||= OpbeatRuby.configuration
+      if exc.is_a?(OpbeatRuby::Error)
         # Try to prevent error reporting loops
-        Raven.logger.info "Refusing to capture Raven error: #{exc.inspect}"
+        OpbeatRuby.logger.info "Refusing to capture OpbeatRuby error: #{exc.inspect}"
         return nil
       end
       if configuration[:excluded_exceptions].include? exc.class.name
-        Raven.logger.info "User excluded error: #{exc.inspect}"
+        OpbeatRuby.logger.info "User excluded error: #{exc.inspect}"
         return nil
       end
       self.new({}, configuration) do |evt|
@@ -119,7 +118,7 @@ module Raven
     end
 
     def self.capture_rack_exception(exc, rack_env, configuration=nil, &block)
-      configuration ||= Raven.configuration
+      configuration ||= OpbeatRuby.configuration
       capture_exception(exc, configuration) do |evt|
         evt.interface :http do |int|
           int.from_rack(rack_env)
@@ -129,7 +128,7 @@ module Raven
     end
 
     def self.capture_message(message, configuration=nil)
-      configuration ||= Raven.configuration
+      configuration ||= OpbeatRuby.configuration
       self.new({}, configuration) do |evt|
         evt.message = message
         evt.level = :error
@@ -180,7 +179,7 @@ module Raven
 
     def get_context(path, line, context)
       lines = (2 * context + 1).times.map do |i|
-        Raven::LineCache::getline(path, line - context + i)
+        OpbeatRuby::LineCache::getline(path, line - context + i)
       end
       [lines[0..(context-1)], lines[context], lines[(context+1)..-1]]
     end

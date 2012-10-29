@@ -1,6 +1,6 @@
 # A much simpler source line cacher because linecache sucks at platform compat
 
-module Raven
+module OpbeatRuby
 
   class LineCache
     class << self
