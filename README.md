@@ -1,35 +1,35 @@
-# Raven-Ruby
+# OpbeatRuby
 
-[![Build Status](https://secure.travis-ci.org/getsentry/raven-ruby.png?branch=master)](http://travis-ci.org/getsentry/raven-ruby)
+<!-- [![Build Status](https://secure.travis-ci.org/opbeat/opbeat_ruby-ruby.png?branch=master)](http://travis-ci.org/opbeat/opbeat_ruby-ruby) -->
 
-A client and integration layer for the [Sentry](https://github.com/getsentry/sentry) error reporting API.
+A client and integration layer for [Opbeat](https://opbeat.com).
 
-This library is still forming, so if you are looking to just use it, please check back in a few weeks.
 
 ## Installation
 
 Add the following to your `Gemfile`:
 
 ```ruby
-gem "sentry-raven", :git => "https://github.com/getsentry/raven-ruby.git"
+gem "opbeat_ruby", :git => "https://github.com/opbeat/opbeat_ruby.git"
 ```
 
-Or install manually
+<!-- Or install manually
 ```bash
-$ gem install sentry-raven
+$ gem install sentry-opbeat_ruby
 ```
-
+ -->
 ## Usage
 
 ### Rails 3
 
-Add a `config/initializers/raven.rb` containing:
+Add a `config/initializers/opbeat_ruby.rb` containing:
 
 ```ruby
-require 'raven'
+require 'opbeat_ruby'
 
-Raven.configure do |config|
-  config.dsn = 'http://public:secret@example.com/project-id'
+OpbeatRuby.configure do |config|
+  config.project_id = '094e250818f44e82bfae13919f55fb35'
+  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
 end
 ```
 
@@ -42,26 +42,28 @@ No support for Rails 2 yet.
 Basic RackUp file.
 
 ```ruby
-require 'raven'
+require 'opbeat_ruby'
 
-Raven.configure do |config|
-  config.dsn = 'http://public:secret@example.com/project-id'
+OpbeatRuby.configure do |config|
+  config.project_id = '094e250818f44e82bfae13919f55fb35'
+  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
 end
 
-use Raven::Rack
+use OpbeatRuby::Rack
 ```
 
 ### Sinatra
 
 ```ruby
 require 'sinatra'
-require 'raven'
+require 'opbeat_ruby'
 
-Raven.configure do |config|
-  config.dsn = 'http://public:secret@example.com/project-id'
+OpbeatRuby.configure do |config|
+  config.project_id = '094e250818f44e82bfae13919f55fb35'
+  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
 end
 
-use Raven::Rack
+use OpbeatRuby::Rack
 
 get '/' do
   1 / 0
@@ -71,18 +73,19 @@ end
 ### Other Ruby
 
 ```ruby
-require 'raven'
+require 'opbeat_ruby'
 
-Raven.configure do |config|
-  config.dsn = 'http://public:secret@example.com/project-id'
+OpbeatRuby.configure do |config|
+  config.project_id = '094e250818f44e82bfae13919f55fb35'
+  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
 
   # manually configure environment if ENV['RACK_ENV'] is not defined
   config.current_environment = 'production'
 end
 
-Raven.capture # Global style
+OpbeatRuby.capture # Global style
 
-Raven.capture do # Block style
+OpbeatRuby.capture do # Block style
   1 / 0
 end
 ```
@@ -96,15 +99,17 @@ $ rake spec
 
 ## Notifications in development mode
 
-By default events will only be sent to Sentry if your application is running in a production environment. This is configured by default if you are running a Rack application (i.e. anytime `ENV['RACK_ENV']` is set).
+By default events will only be sent to Opbeat if your application is running in a production environment. This is configured by default if you are running a Rack application (i.e. anytime `ENV['RACK_ENV']` is set).
 
-You can configure Raven to run in non-production environments by configuring the `environments` whitelist:
+You can configure Opbeat to run in non-production environments by configuring the `environments` whitelist:
 
 ```ruby
-require 'raven'
+require 'opbeat_ruby'
 
-Raven.configure do |config|
-  config.dsn = 'http://public:secret@example.com/project-id'
+OpbeatRuby.configure do |config|
+  config.project_id = '094e250818f44e82bfae13919f55fb35'
+  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
+
   config.environments = %w[ development production ]
 end
 ```
@@ -116,10 +121,12 @@ If you never wish to be notified of certain exceptions, specify 'excluded_except
 In the example below, the exceptions Rails uses to generate 404 responses will be suppressed.
 
 ```ruby
-require 'raven'
+require 'opbeat_ruby'
 
-Raven.configure do |config|
-  config.dsn = 'http://public:secret@example.com/project-id'
+OpbeatRuby.configure do |config|
+  config.project_id = '094e250818f44e82bfae13919f55fb35'
+  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
+
   config.excluded_exceptions = ['ActionController::RoutingError', 'ActiveRecord::RecordNotFound']
 end
 ```
@@ -127,24 +134,26 @@ end
 ## Sanitizing Data (Processors)
 
 If you need to sanitize or pre-process (before its sent to the server) data, you can do so using the Processors
-implementation. By default, a single processor is installed (Raven::Processors::SanitizeData), which will attempt to
+implementation. By default, a single processor is installed (OpbeatRuby::Processors::SanitizeData), which will attempt to
 sanitize keys that match various patterns (e.g. password) and values that resemble credit card numbers.
 
 To specify your own (or to remove the defaults), simply pass them with your configuration:
 
 ```ruby
-require 'raven'
+require 'opbeat_ruby'
 
-Raven.configure do |config|
-  config.dsn = 'http://public:secret@example.com/project-id'
-  config.processors = [Raven::Processors::SanitizeData]
+OpbeatRuby.configure do |config|
+  config.project_id = '094e250818f44e82bfae13919f55fb35'
+  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
+
+  config.processors = [OpbeatRuby::Processors::SanitizeData]
 end
+```
 
-Resources
----------
+## Resources
 
-* `Bug Tracker <http://github.com/getsentry/raven-ruby/issues>`_
-* `Code <http://github.com/getsentry/raven-ruby>`_
-* `Mailing List <https://groups.google.com/group/getsentry>`_
-* `IRC <irc://irc.freenode.net/sentry>`_  (irc.freenode.net, #sentry)
+* [Bug Tracker](http://github.com/getsentry/opbeat_ruby-ruby/issues)
+* [Code](http://github.com/getsentry/opbeat_ruby-ruby)
+* [Mailing List](https://groups.google.com/group/getsentry)
+* [IRC](irc://irc.freenode.net/sentry)  (irc.freenode.net, #sentry)
 
