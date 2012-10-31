@@ -2,7 +2,7 @@
 
 <!-- [![Build Status](https://secure.travis-ci.org/opbeat/opbeat_ruby-ruby.png?branch=master)](http://travis-ci.org/opbeat/opbeat_ruby-ruby) -->
 
-A client and integration layer for [Opbeat](https://opbeat.com).
+A client and integration layer for [Opbeat](https://opbeat.com). Forked from the [raven-ruby](https://github.com/getsentry/raven-ruby) project.
 
 
 ## Installation
@@ -152,8 +152,6 @@ end
 
 ## Resources
 
-* [Bug Tracker](http://github.com/getsentry/opbeat_ruby-ruby/issues)
-* [Code](http://github.com/getsentry/opbeat_ruby-ruby)
-* [Mailing List](https://groups.google.com/group/getsentry)
-* [IRC](irc://irc.freenode.net/sentry)  (irc.freenode.net, #sentry)
+* [Bug Tracker](http://github.com/opbeat/opbeat_ruby/issues)
+* [Code](http://github.com/opbeat/opbeat_ruby)
 
