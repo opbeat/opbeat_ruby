@@ -49,11 +49,8 @@ module OpbeatRuby
         req.body = MultiJson.encode(event.to_hash)
         req.headers[AUTH_HEADER_KEY] = self.generate_auth_header(req.body)
         req.headers["User-Agent"] = USER_AGENT
-        puts req.headers
       end
-      puts response.body
-      puts "Response: #{response.body}, #{response.status}"
-      raise Error.new("Error from Opbeat server (#{response.status}): #{response.body}") unless response.status == 200
+      raise Error.new("Error from Opbeat server (#{response.status}): #{response.body}") unless response.status == 202
       response
     end
 
