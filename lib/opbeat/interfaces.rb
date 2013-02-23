@@ -1,6 +1,6 @@
 require 'hashie'
 
-module OpbeatRuby
+module Opbeat
 
   INTERFACES = {}
 

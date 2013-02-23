@@ -1,4 +1,4 @@
-module OpbeatRuby
+module Opbeat
   module Rails
     module Middleware
       module DebugExceptionsCatcher
@@ -8,8 +8,8 @@ module OpbeatRuby
 
         def render_exception_with_raven(env, exception)
           begin
-            evt = OpbeatRuby::Event.capture_rack_exception(exception, env)
-            OpbeatRuby.send(evt) if evt
+            evt = Opbeat::Event.capture_rack_exception(exception, env)
+            Opbeat.send(evt) if evt
           rescue
             ::Rails::logger.debug "Error capturing or sending exception #{$!}"
           end

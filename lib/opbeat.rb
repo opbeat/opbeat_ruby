@@ -1,25 +1,25 @@
-require 'opbeat_ruby/version'
-require 'opbeat_ruby/configuration'
-require 'opbeat_ruby/logger'
-require 'opbeat_ruby/client'
-require 'opbeat_ruby/event'
-require 'opbeat_ruby/rack'
-require 'opbeat_ruby/interfaces/message'
-require 'opbeat_ruby/interfaces/exception'
-require 'opbeat_ruby/interfaces/stack_trace'
-require 'opbeat_ruby/interfaces/http'
-require 'opbeat_ruby/processors/sanitizedata'
+require 'opbeat/version'
+require 'opbeat/configuration'
+require 'opbeat/logger'
+require 'opbeat/client'
+require 'opbeat/event'
+require 'opbeat/rack'
+require 'opbeat/interfaces/message'
+require 'opbeat/interfaces/exception'
+require 'opbeat/interfaces/stack_trace'
+require 'opbeat/interfaces/http'
+require 'opbeat/processors/sanitizedata'
 
-require 'opbeat_ruby/railtie' if defined?(Rails::Railtie)
+require 'opbeat/railtie' if defined?(Rails::Railtie)
 
-module OpbeatRuby
+module Opbeat
   class << self
     # The client object is responsible for delivering formatted data to the Sentry server.
-    # Must respond to #send. See OpbeatRuby::Client.
+    # Must respond to #send. See Opbeat::Client.
     attr_accessor :client
 
-    # A OpbeatRuby configuration object. Must act like a hash and return sensible
-    # values for all OpbeatRuby configuration options. See OpbeatRuby::Configuration.
+    # A Opbeat configuration object. Must act like a hash and return sensible
+    # values for all Opbeat configuration options. See Opbeat::Configuration.
     attr_writer :configuration
 
     def logger
@@ -28,11 +28,11 @@ module OpbeatRuby
 
     # Tell the log that the client is good to go
     def report_ready
-      self.logger.info "OpbeatRuby #{VERSION} ready to catch errors"
+      self.logger.info "Opbeat #{VERSION} ready to catch errors"
     end
 
     # The configuration object.
-    # @see OpbeatRuby.configure
+    # @see Opbeat.configure
     def configuration
       @configuration ||= Configuration.new
     end
@@ -40,7 +40,7 @@ module OpbeatRuby
     # Call this method to modify defaults in your initializers.
     #
     # @example
-    #   OpbeatRuby.configure do |config|
+    #   Opbeat.configure do |config|
     #     config.server = 'http://...'
     #   end
     def configure(silent = false)
@@ -53,8 +53,8 @@ module OpbeatRuby
     # Send an event to the configured Sentry server
     #
     # @example
-    #   evt = OpbeatRuby::Event.new(:message => "An error")
-    #   OpbeatRuby.send(evt)
+    #   evt = Opbeat::Event.new(:message => "An error")
+    #   Opbeat.send(evt)
     def send(evt)
       @client.send(evt) if @client
     end
@@ -63,7 +63,7 @@ module OpbeatRuby
     # no block is given
     #
     # @example
-    #   OpbeatRuby.capture do
+    #   Opbeat.capture do
     #     MyApp.run
     #   end
     def capture(&block)
@@ -71,7 +71,7 @@ module OpbeatRuby
         begin
           block.call
         rescue Error => e
-          raise # Don't capture OpbeatRuby errors
+          raise # Don't capture Opbeat errors
         rescue Exception => e
           self.captureException(e)
           raise

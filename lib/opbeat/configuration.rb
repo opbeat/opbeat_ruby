@@ -1,14 +1,17 @@
-module OpbeatRuby
+module Opbeat
   class Configuration
 
-    # Base URL of the Sentry server
+    # Base URL of the Opbeat server
     attr_accessor :server
 
     # Secret access token for authentication with Opbeat
-    attr_accessor :access_token
+    attr_accessor :secret_token
 
-    # Project ID to use with Opbeat
-    attr_accessor :project_id
+    # Organization ID to use with Opbeat
+    attr_accessor :organization_id
+
+    # App ID to use with Opbeat
+    attr_accessor :app_id
 
     # Logger to use internally
     attr_accessor :logger
@@ -16,7 +19,7 @@ module OpbeatRuby
     # Number of lines of code context to capture, or nil for none
     attr_accessor :context_lines
 
-    # Whitelist of environments that will send notifications to Sentry
+    # Whitelist of environments that will send notifications to Opbeat
     attr_accessor :environments
 
     # Include module versions in reports?
@@ -32,33 +35,16 @@ module OpbeatRuby
 
     def initialize
       self.server = ENV['OPBEAT_SERVER'] || "https://opbeat.com"
-      self.access_token = ENV['OPBEAT_ACCESS_TOKEN'] if ENV['OPBEAT_ACCESS_TOKEN']
-      self.project_id = ENV['OPBEAT_PROJECT_ID'] if ENV['OPBEAT_PROJECT_ID']
+      self.secret_token = ENV['OPBEAT_SECRET_TOKEN'] if ENV['OPBEAT_SECRET_TOKEN']
+      self.organization_id = ENV['OPBEAT_ORGANIZATION_ID'] if ENV['OPBEAT_ORGANIZATION_ID']
+      self.app_id = ENV['OPBEAT_APP_ID'] if ENV['OPBEAT_APP_ID']
       @context_lines = 3
       self.environments = %w[ production ]
       self.current_environment = ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
       self.send_modules = true
       self.excluded_exceptions = []
-      self.processors = [OpbeatRuby::Processor::SanitizeData]
+      self.processors = [Opbeat::Processor::SanitizeData]
     end
-
-    # def server=(value)
-    #   uri = URI::parse(value)
-    #   if uri.user
-    #     # DSN-style string
-    #     uri_path = uri.path.split('/')
-    #     @project_id = uri_path.pop
-    #     @server = "#{uri.scheme}://#{uri.host}"
-    #     @server << ":#{uri.port}" unless uri.port == {'http'=>80,'https'=>443}[uri.scheme]
-    #     @server << uri_path.join('/')
-    #     @public_key = uri.user
-    #     @secret_key = uri.password
-    #   else
-    #     @server = value
-    #   end
-    # end
-
-    # alias_method :dsn=, :server=
 
     # Allows config options to be read like a hash
     #
