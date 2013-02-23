@@ -22,14 +22,23 @@ module Opbeat
     # Whitelist of environments that will send notifications to Opbeat
     attr_accessor :environments
 
-    # Include module versions in reports?
-    attr_accessor :send_modules
-
     # Which exceptions should never be sent
     attr_accessor :excluded_exceptions
 
     # Processors to run on data before sending upstream
     attr_accessor :processors
+
+    # Timeout when waiting for the server to return data in seconds
+    attr_accessor :timeout
+
+    # Timout when opening connection to the server
+    attr_accessor :open_timeout
+
+    # Backoff multipler
+    attr_accessor :backoff_multiplier
+
+    # Should the SSL certificate of the server be verified?
+    attr_accessor :ssl_verification
 
     attr_reader :current_environment
 
@@ -41,9 +50,11 @@ module Opbeat
       @context_lines = 3
       self.environments = %w[ production ]
       self.current_environment = ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
-      self.send_modules = true
       self.excluded_exceptions = []
       self.processors = [Opbeat::Processor::SanitizeData]
+      self.timeout = 1
+      self.backoff_multiplier = 2
+      self.ssl_verification = true
     end
 
     # Allows config options to be read like a hash

@@ -40,12 +40,6 @@ module Opbeat
       hostname = Socket.gethostbyname(hostname).first rescue hostname
       @hostname = options[:hostname] || hostname
 
-      # Older versions of Rubygems don't support iterating over all specs
-      if @configuration.send_modules && Gem::Specification.respond_to?(:map)
-        options[:modules] ||= Hash[Gem::Specification.map {|spec| [spec.name, spec.version.to_s]}]
-      end
-      @modules = options[:modules]
-
       block.call(self) if block
 
       # Some type coercion
