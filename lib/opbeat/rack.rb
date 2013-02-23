@@ -1,11 +1,11 @@
 module Opbeat
   # Middleware for Rack applications. Any errors raised by the upstream
-  # application will be delivered to Sentry and re-raised.
+  # application will be delivered to Opbeat and re-raised.
   #
   # Synopsis:
   #
   #   require 'rack'
-  #   require 'raven'
+  #   require 'opbeat'
   #
   #   Opbeat.configure do |config|
   #     config.server = 'http://my_dsn'

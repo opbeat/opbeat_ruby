@@ -14,7 +14,7 @@ require 'opbeat/railtie' if defined?(Rails::Railtie)
 
 module Opbeat
   class << self
-    # The client object is responsible for delivering formatted data to the Sentry server.
+    # The client object is responsible for delivering formatted data to the Opbeat server.
     # Must respond to #send. See Opbeat::Client.
     attr_accessor :client
 
@@ -50,7 +50,7 @@ module Opbeat
       self.client
     end
 
-    # Send an event to the configured Sentry server
+    # Send an event to the configured Opbeat server
     #
     # @example
     #   evt = Opbeat::Event.new(:message => "An error")
