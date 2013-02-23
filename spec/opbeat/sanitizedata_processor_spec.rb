@@ -9,7 +9,7 @@ describe Opbeat::Processor::SanitizeData do
 
   it 'should filter http data' do
     data = {
-      'sentry.interfaces.Http' => {
+      'http' => {
         'data' => {
           'foo' => 'bar',
           'password' => 'hello',
@@ -22,7 +22,7 @@ describe Opbeat::Processor::SanitizeData do
 
     result = @processor.process(data)
 
-    vars = result["sentry.interfaces.Http"]["data"]
+    vars = result["http"]["data"]
     vars["foo"].should eq("bar")
     vars["password"].should eq(Opbeat::Processor::SanitizeData::MASK)
     vars["the_secret"].should eq(Opbeat::Processor::SanitizeData::MASK)

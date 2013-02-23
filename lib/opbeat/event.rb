@@ -20,7 +20,7 @@ module Opbeat
     BACKTRACE_RE = /^(.+?):(\d+)(?::in `(.+?)')?$/
 
     attr_reader :id
-    attr_accessor :project, :message, :timestamp, :level
+    attr_accessor :organization, :app, :message, :timestamp, :level
     attr_accessor :logger, :culprit, :hostname, :modules, :extra
 
     def initialize(options={}, configuration=nil, &block)
