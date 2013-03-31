@@ -1,6 +1,6 @@
-require 'opbeat_ruby/processor'
+require 'opbeat/processor'
 
-module OpbeatRuby
+module Opbeat
   module Processor
     class SanitizeData < Processor
 

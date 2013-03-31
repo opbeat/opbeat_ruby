@@ -1,14 +1,14 @@
 require File::expand_path('../../spec_helper', __FILE__)
-require 'opbeat_ruby'
+require 'opbeat'
 
-describe OpbeatRuby::Event do
+describe Opbeat::Event do
   describe '.capture_message' do
     let(:message) { 'This is a message' }
-    let(:hash) { OpbeatRuby::Event.capture_message(message).to_hash }
+    let(:hash) { Opbeat::Event.capture_message(message).to_hash }
 
     context 'for a Message' do
       it 'returns an event' do
-        OpbeatRuby::Event.capture_message(message).should be_a(OpbeatRuby::Event)
+        Opbeat::Event.capture_message(message).should be_a(Opbeat::Event)
       end
 
       it "sets the message to the value passed" do
@@ -24,11 +24,11 @@ describe OpbeatRuby::Event do
   describe '.capture_exception' do
     let(:message) { 'This is a message' }
     let(:exception) { Exception.new(message) }
-    let(:hash) { OpbeatRuby::Event.capture_exception(exception).to_hash }
+    let(:hash) { Opbeat::Event.capture_exception(exception).to_hash }
 
     context 'for an Exception' do
       it 'returns an event' do
-        OpbeatRuby::Event.capture_exception(exception).should be_a(OpbeatRuby::Event)
+        Opbeat::Event.capture_exception(exception).should be_a(Opbeat::Event)
       end
 
       it "sets the message to the exception's message and type" do
@@ -53,20 +53,20 @@ describe OpbeatRuby::Event do
     end
 
     context 'for a nested exception type' do
-      module OpbeatRuby::Test
+      module Opbeat::Test
         class Exception < Exception; end
       end
-      let(:exception) { OpbeatRuby::Test::Exception.new(message) }
+      let(:exception) { Opbeat::Test::Exception.new(message) }
 
       it 'sends the module name as part of the exception info' do
-        hash['exception']['module'].should == 'OpbeatRuby::Test'
+        hash['exception']['module'].should == 'Opbeat::Test'
       end
     end
 
-    context 'for a OpbeatRuby::Error' do
-      let(:exception) { OpbeatRuby::Error.new }
+    context 'for a Opbeat::Error' do
+      let(:exception) { Opbeat::Error.new }
       it 'does not create an event' do
-        OpbeatRuby::Event.capture_exception(exception).should be_nil
+        Opbeat::Event.capture_exception(exception).should be_nil
       end
     end
 

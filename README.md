@@ -1,4 +1,4 @@
-# OpbeatRuby
+# Opbeat
 
 <!-- [![Build Status](https://secure.travis-ci.org/opbeat/opbeat_ruby-ruby.png?branch=master)](http://travis-ci.org/opbeat/opbeat_ruby-ruby) -->
 
@@ -10,7 +10,7 @@ A client and integration layer for [Opbeat](https://opbeat.com). Forked from the
 Add the following to your `Gemfile`:
 
 ```ruby
-gem "opbeat_ruby", :git => "https://github.com/opbeat/opbeat_ruby.git"
+gem "opbeat", :git => "https://github.com/opbeat/opbeat_ruby.git"
 ```
 
 <!-- Or install manually
@@ -22,14 +22,15 @@ $ gem install sentry-opbeat_ruby
 
 ### Rails 3
 
-Add a `config/initializers/opbeat_ruby.rb` containing:
+Add a `config/initializers/opbeat.rb` containing:
 
 ```ruby
-require 'opbeat_ruby'
+require 'opbeat'
 
-OpbeatRuby.configure do |config|
-  config.project_id = '094e250818f44e82bfae13919f55fb35'
-  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
+Opbeat.configure do |config|
+  config.organization_id = '094e250818f44e82bfae13919f55fb35'
+  config.app_id = '094e250818'
+  config.secret_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
 end
 ```
 
@@ -42,28 +43,30 @@ No support for Rails 2 yet.
 Basic RackUp file.
 
 ```ruby
-require 'opbeat_ruby'
+require 'opbeat'
 
-OpbeatRuby.configure do |config|
-  config.project_id = '094e250818f44e82bfae13919f55fb35'
-  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
+Opbeat.configure do |config|
+  config.organization_id = '094e250818f44e82bfae13919f55fb35'
+  config.app_id = '094e250818'
+  config.secret_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
 end
 
-use OpbeatRuby::Rack
+use Opbeat::Rack
 ```
 
 ### Sinatra
 
 ```ruby
 require 'sinatra'
-require 'opbeat_ruby'
+require 'opbeat'
 
-OpbeatRuby.configure do |config|
-  config.project_id = '094e250818f44e82bfae13919f55fb35'
-  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
+Opbeat.configure do |config|
+  config.organization_id = '094e250818f44e82bfae13919f55fb35'
+  config.app_id = '094e250818'
+  config.secret_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
 end
 
-use OpbeatRuby::Rack
+use Opbeat::Rack
 
 get '/' do
   1 / 0
@@ -73,19 +76,20 @@ end
 ### Other Ruby
 
 ```ruby
-require 'opbeat_ruby'
+require 'opbeat'
 
-OpbeatRuby.configure do |config|
-  config.project_id = '094e250818f44e82bfae13919f55fb35'
-  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
+Opbeat.configure do |config|
+  config.organization_id = '094e250818f44e82bfae13919f55fb35'
+  config.app_id = '094e250818'
+  config.secret_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
 
   # manually configure environment if ENV['RACK_ENV'] is not defined
   config.current_environment = 'production'
 end
 
-OpbeatRuby.capture # Global style
+Opbeat.capture # Global style
 
-OpbeatRuby.capture do # Block style
+Opbeat.capture do # Block style
   1 / 0
 end
 ```
@@ -104,11 +108,12 @@ By default events will only be sent to Opbeat if your application is running in 
 You can configure Opbeat to run in non-production environments by configuring the `environments` whitelist:
 
 ```ruby
-require 'opbeat_ruby'
+require 'opbeat'
 
-OpbeatRuby.configure do |config|
-  config.project_id = '094e250818f44e82bfae13919f55fb35'
-  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
+Opbeat.configure do |config|
+  config.organization_id = '094e250818f44e82bfae13919f55fb35'
+  config.app_id = '094e250818'
+  config.secret_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
 
   config.environments = %w[ development production ]
 end
@@ -121,11 +126,12 @@ If you never wish to be notified of certain exceptions, specify 'excluded_except
 In the example below, the exceptions Rails uses to generate 404 responses will be suppressed.
 
 ```ruby
-require 'opbeat_ruby'
+require 'opbeat'
 
-OpbeatRuby.configure do |config|
-  config.project_id = '094e250818f44e82bfae13919f55fb35'
-  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
+Opbeat.configure do |config|
+  config.organization_id = '094e250818f44e82bfae13919f55fb35'
+  config.app_id = '094e250818'
+  config.secret_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
 
   config.excluded_exceptions = ['ActionController::RoutingError', 'ActiveRecord::RecordNotFound']
 end
@@ -134,19 +140,20 @@ end
 ## Sanitizing Data (Processors)
 
 If you need to sanitize or pre-process (before its sent to the server) data, you can do so using the Processors
-implementation. By default, a single processor is installed (OpbeatRuby::Processors::SanitizeData), which will attempt to
+implementation. By default, a single processor is installed (Opbeat::Processors::SanitizeData), which will attempt to
 sanitize keys that match various patterns (e.g. password) and values that resemble credit card numbers.
 
 To specify your own (or to remove the defaults), simply pass them with your configuration:
 
 ```ruby
-require 'opbeat_ruby'
+require 'opbeat'
 
-OpbeatRuby.configure do |config|
-  config.project_id = '094e250818f44e82bfae13919f55fb35'
-  config.access_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
-
-  config.processors = [OpbeatRuby::Processors::SanitizeData]
+Opbeat.configure do |config|
+  config.organization_id = '094e250818f44e82bfae13919f55fb35'
+  config.app_id = '094e250818'
+  config.secret_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
+  
+  config.processors = [Opbeat::Processors::SanitizeData]
 end
 ```
 

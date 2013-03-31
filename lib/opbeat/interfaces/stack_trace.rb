@@ -1,8 +1,8 @@
 require 'hashie'
 
-require 'opbeat_ruby/interfaces'
+require 'opbeat/interfaces'
 
-module OpbeatRuby
+module Opbeat
 
   class StacktraceInterface < Interface
 

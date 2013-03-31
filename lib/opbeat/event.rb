@@ -2,10 +2,10 @@ require 'rubygems'
 require 'socket'
 require 'uuidtools'
 
-require 'opbeat_ruby/error'
-require 'opbeat_ruby/linecache'
+require 'opbeat/error'
+require 'opbeat/linecache'
 
-module OpbeatRuby
+module Opbeat
 
   class Event
 
@@ -20,11 +20,11 @@ module OpbeatRuby
     BACKTRACE_RE = /^(.+?):(\d+)(?::in `(.+?)')?$/
 
     attr_reader :id
-    attr_accessor :project, :message, :timestamp, :level
-    attr_accessor :logger, :culprit, :server_name, :modules, :extra
+    attr_accessor :organization, :app, :message, :timestamp, :level
+    attr_accessor :logger, :culprit, :hostname, :modules, :extra
 
     def initialize(options={}, configuration=nil, &block)
-      @configuration = configuration || OpbeatRuby.configuration
+      @configuration = configuration || Opbeat.configuration
       @interfaces = {}
 
       @id = options[:id] || UUIDTools::UUID.random_create.hexdigest
@@ -38,13 +38,7 @@ module OpbeatRuby
       # Try to resolve the hostname to an FQDN, but fall back to whatever the load name is
       hostname = Socket.gethostname
       hostname = Socket.gethostbyname(hostname).first rescue hostname
-      @server_name = options[:server_name] || hostname
-
-      # Older versions of Rubygems don't support iterating over all specs
-      if @configuration.send_modules && Gem::Specification.respond_to?(:map)
-        options[:modules] ||= Hash[Gem::Specification.map {|spec| [spec.name, spec.version.to_s]}]
-      end
-      @modules = options[:modules]
+      @hostname = options[:hostname] || hostname
 
       block.call(self) if block
 
@@ -58,8 +52,8 @@ module OpbeatRuby
     end
 
     def interface(name, value=nil, &block)
-      int = OpbeatRuby::find_interface(name)
-      OpbeatRuby.logger.info "Unknown interface: #{name}" unless int
+      int = Opbeat::find_interface(name)
+      Opbeat.logger.info "Unknown interface: #{name}" unless int
       raise Error.new("Unknown interface: #{name}") unless int
       @interfaces[int.name] = int.new(value, &block) if value || block
       @interfaces[int.name]
@@ -82,7 +76,7 @@ module OpbeatRuby
         'logger' => self.logger,
       }
       data['culprit'] = self.culprit if self.culprit
-      data['server_name'] = self.server_name if self.server_name
+      data['machine'] = {'hostname' => self.hostname } if self.hostname
       data['extra'] = self.extra if self.extra
       @interfaces.each_pair do |name, int_data|
         data[name] = int_data.to_hash
@@ -91,14 +85,14 @@ module OpbeatRuby
     end
 
     def self.capture_exception(exc, configuration=nil, &block)
-      configuration ||= OpbeatRuby.configuration
-      if exc.is_a?(OpbeatRuby::Error)
+      configuration ||= Opbeat.configuration
+      if exc.is_a?(Opbeat::Error)
         # Try to prevent error reporting loops
-        OpbeatRuby.logger.info "Refusing to capture OpbeatRuby error: #{exc.inspect}"
+        Opbeat.logger.info "Refusing to capture Opbeat error: #{exc.inspect}"
         return nil
       end
       if configuration[:excluded_exceptions].include? exc.class.name
-        OpbeatRuby.logger.info "User excluded error: #{exc.inspect}"
+        Opbeat.logger.info "User excluded error: #{exc.inspect}"
         return nil
       end
       self.new({}, configuration) do |evt|
@@ -118,7 +112,7 @@ module OpbeatRuby
     end
 
     def self.capture_rack_exception(exc, rack_env, configuration=nil, &block)
-      configuration ||= OpbeatRuby.configuration
+      configuration ||= Opbeat.configuration
       capture_exception(exc, configuration) do |evt|
         evt.interface :http do |int|
           int.from_rack(rack_env)
@@ -128,7 +122,7 @@ module OpbeatRuby
     end
 
     def self.capture_message(message, configuration=nil)
-      configuration ||= OpbeatRuby.configuration
+      configuration ||= Opbeat.configuration
       self.new({}, configuration) do |evt|
         evt.message = message
         evt.level = :error
@@ -179,7 +173,7 @@ module OpbeatRuby
 
     def get_context(path, line, context)
       lines = (2 * context + 1).times.map do |i|
-        OpbeatRuby::LineCache::getline(path, line - context + i)
+        Opbeat::LineCache::getline(path, line - context + i)
       end
       [lines[0..(context-1)], lines[context], lines[(context+1)..-1]]
     end

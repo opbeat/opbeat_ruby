@@ -1,26 +1,26 @@
 require File::expand_path('../../spec_helper', __FILE__)
-require 'opbeat_ruby'
+require 'opbeat'
 
-describe OpbeatRuby::Rack do
+describe Opbeat::Rack do
   before do
     @send = double("send")
     @event = double("event")
-    OpbeatRuby.stub(:send) { @send }
-    OpbeatRuby::Event.stub(:capture_rack_exception) { @event }
+    Opbeat.stub(:send) { @send }
+    Opbeat::Event.stub(:capture_rack_exception) { @event }
   end
 
   it 'should capture exceptions' do
     exception = build_exception()
     env = {}
     
-    OpbeatRuby::Event.should_receive(:capture_rack_exception).with(exception, env)
-    OpbeatRuby.should_receive(:send).with(@event)
+    Opbeat::Event.should_receive(:capture_rack_exception).with(exception, env)
+    Opbeat.should_receive(:send).with(@event)
 
     app = lambda do |e|
       raise exception
     end
 
-    stack = OpbeatRuby::Rack.new(app)
+    stack = Opbeat::Rack.new(app)
     lambda {stack.call(env)}.should raise_error(exception)
   end
 
@@ -28,15 +28,15 @@ describe OpbeatRuby::Rack do
     exception = build_exception()
     env = {}
 
-    OpbeatRuby::Event.should_receive(:capture_rack_exception).with(exception, env)
-    OpbeatRuby.should_receive(:send).with(@event)
+    Opbeat::Event.should_receive(:capture_rack_exception).with(exception, env)
+    Opbeat.should_receive(:send).with(@event)
 
     app = lambda do |e|
       e['rack.exception'] = exception
       [200, {}, ['okay']]
     end
 
-    stack = OpbeatRuby::Rack.new(app)
+    stack = Opbeat::Rack.new(app)
 
     stack.call(env)
   end

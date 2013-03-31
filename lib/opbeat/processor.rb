@@ -1,4 +1,4 @@
-module OpbeatRuby
+module Opbeat
 
   module Processor
     class Processor

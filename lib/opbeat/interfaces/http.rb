@@ -1,6 +1,6 @@
-require 'opbeat_ruby/interfaces'
+require 'opbeat/interfaces'
 
-module OpbeatRuby
+module Opbeat
 
   class HttpInterface < Interface
 
