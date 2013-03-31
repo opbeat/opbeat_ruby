@@ -1,9 +1,9 @@
 $:.unshift File.expand_path('../lib', __FILE__)
-require 'opbeat_ruby/version'
+require 'opbeat/version'
 
 Gem::Specification.new do |gem|
-  gem.name = "opbeat_ruby"
-  gem.version = OpbeatRuby::VERSION
+  gem.name = "opbeat"
+  gem.version = Opbeat::VERSION
   gem.platform = Gem::Platform::RUBY
   gem.summary = "A gem that provides a client interface for the Opbeat error logger"
   gem.email = "ron@opbeat.com"
