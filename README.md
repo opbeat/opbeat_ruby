@@ -10,7 +10,7 @@ A client and integration layer for [Opbeat](https://opbeat.com). Forked from the
 Add the following to your `Gemfile`:
 
 ```ruby
-gem "opbeat", :git => "https://github.com/opbeat/opbeat_ruby.git"
+gem "opbeat"
 ```
 
 <!-- Or install manually
