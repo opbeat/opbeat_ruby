@@ -179,8 +179,8 @@ module Opbeat
     end
 
     def strip_load_path_from(path)
-      prefix = $:.select {|s| path.start_with?(s)}.sort_by {|s| s.length}.last
-      prefix ? path[prefix.chomp(File::SEPARATOR).length+1..-1] : path
+      prefix = $:.select {|s| path.start_with?(s.to_s)}.sort_by {|s| s.to_s.length}.last
+      prefix ? path[prefix.to_s.chomp(File::SEPARATOR).length+1..-1] : path
     end
   end
 end
