@@ -20,7 +20,7 @@ $ gem install sentry-opbeat_ruby
  -->
 ## Usage
 
-### Rails 3
+### Rails 3 and Rails 4
 
 Add a `config/initializers/opbeat.rb` containing:
 
