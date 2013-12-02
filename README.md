@@ -153,7 +153,7 @@ Opbeat.configure do |config|
   config.app_id = '094e250818'
   config.secret_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
   
-  config.processors = [Opbeat::Processors::SanitizeData]
+  config.processors = [Opbeat::Processor::SanitizeData]
 end
 ```
 
