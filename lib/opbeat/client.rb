@@ -19,7 +19,6 @@ module Opbeat
       return true if @status == :online
         
       interval = ([@retry_number, 6].min() ** 2) * @configuration[:backoff_multiplier]
-      puts interval
       return true if Time.now - @last_check > interval
 
       false
@@ -50,6 +49,7 @@ module Opbeat
     def initialize(configuration)
       @configuration = configuration
       @state = ClientState.new configuration
+      @processors = configuration.processors.map { |p| p.new(self) }
     end
 
     def conn
@@ -74,6 +74,16 @@ module Opbeat
       'Bearer ' + self.configuration[:secret_token]
     end
 
+    def encode(event)
+      event_hash = event.to_hash
+      
+      @processors.each do |p|
+        event_hash = p.process(event_hash)
+      end
+      
+      return MultiJson.encode(event_hash)
+    end
+
     def send(event)
       return unless configuration.send_in_current_environment?
       return unless state.should_try?
@@ -86,7 +96,7 @@ module Opbeat
       begin
         response = self.conn.post @url do |req|
           req.headers['Content-Type'] = 'application/json'
-          req.body = MultiJson.encode(event.to_hash)
+          req.body = self.encode(event)
           req.headers[AUTH_HEADER_KEY] = self.generate_auth_header(req.body)
           req.headers["User-Agent"] = USER_AGENT
         end
