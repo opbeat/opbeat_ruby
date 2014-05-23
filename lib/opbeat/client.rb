@@ -60,8 +60,8 @@ module Opbeat
       raise Error.new('No app ID specified') unless self.configuration[:app_id]
 
       Opbeat.logger.debug "Opbeat client connecting to #{self.configuration[:server]}"
-      @url =  self.configuration[:server] + "/api/v1/organizations/" + self.configuration[:organization_id] +  "/apps/" + self.configuration[:app_id] + "/errors/"
-      @conn ||=  Faraday.new(:url => @url, :ssl => {:verify => self.configuration.ssl_verification}) do |builder|
+      @base_url =  self.configuration[:server] + "/api/v1/organizations/" + self.configuration[:organization_id] +  "/apps/" + self.configuration[:app_id]
+      @conn ||=  Faraday.new(:url => @base_url, :ssl => {:verify => self.configuration.ssl_verification}) do |builder|
         builder.adapter  Faraday.default_adapter
       end
 
@@ -84,7 +84,7 @@ module Opbeat
       return MultiJson.encode(event_hash)
     end
 
-    def send(event)
+    def send_event(event)
       return unless configuration.send_in_current_environment?
       return unless state.should_try?
 
@@ -94,7 +94,7 @@ module Opbeat
       Opbeat.logger.debug "Sending event #{event.id} to Opbeat"
       
       begin
-        response = self.conn.post @url do |req|
+        response = self.conn.post @base_url + "/errors/" do |req|
           req.headers['Content-Type'] = 'application/json'
           req.body = self.encode(event)
           req.headers[AUTH_HEADER_KEY] = self.generate_auth_header(req.body)
@@ -113,6 +113,22 @@ module Opbeat
       response
     end
 
+    def send_release(release)
+      Opbeat.logger.debug "Sending release to Opbeat"
+    
+      response = self.conn.post @base_url + "/releases/" do |req|
+        req.headers['Content-Type'] = 'application/json'
+        req.body = self.encode(release)
+        req.headers[AUTH_HEADER_KEY] = self.generate_auth_header(req.body)
+        req.headers["User-Agent"] = USER_AGENT
+      end
+
+      unless response.status == 202
+        raise Error.new("Error from Opbeat server (#{response.status}): #{response.body}")
+      end
+
+      response
+    end
   end
 
 end
