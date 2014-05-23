@@ -6,9 +6,9 @@ namespace :opbeat do
       scm = fetch(:scm)
       if scm != "git"
         info "Skipping Opbeat deployment because scm is not git."
-        return
+        next
       end
-
+      
       within repo_path do
         rev = fetch(:current_revision)
 
@@ -26,7 +26,6 @@ namespace :opbeat do
         notify_command << "#{executable} opbeat:deployment"
         capture ("cd #{release_path};" + notify_command), :once => true
       end
-
     end
   end
 end

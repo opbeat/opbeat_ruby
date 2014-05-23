@@ -13,9 +13,9 @@ module Opbeat
             scm = fetch(:scm)
             if scm != "git"
               puts "Skipping Opbeat deployment notification because scm is not git."
-              return
+              next
             end
-
+          
             branches = capture("cd #{current_release}; /usr/bin/env git branch --contains #{current_revision}").split
             if branches.length == 1
               branch = branch[0].sub("* ")
@@ -29,6 +29,7 @@ module Opbeat
             executable = fetch(:rake, 'bundle exec rake ')
             notify_command << "#{executable} opbeat:deployment"
             capture notify_command, :once => true
+          
           end
         end
       end
