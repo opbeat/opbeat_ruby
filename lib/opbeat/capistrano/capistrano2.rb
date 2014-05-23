@@ -10,6 +10,12 @@ module Opbeat
           desc "Notifies Opbeat of new deployments"
           task :notify, :except => { :no_release => true } do
 
+            scm = fetch(:scm)
+            if scm != "git"
+              puts "Skipping Opbeat deployment notification because scm is not git."
+              return
+            end
+
             branches = capture("cd #{current_release}; /usr/bin/env git branch --contains #{current_revision}").split
             if branches.length == 1
               branch = branch[0].sub("* ")
@@ -31,5 +37,5 @@ module Opbeat
 end
 
 if Capistrano::Configuration.instance
-  Opbeat::Capistrano.load(Capistrano::Configuration.instance)
+  Opbeat::Capistrano.load_into(Capistrano::Configuration.instance)
 end

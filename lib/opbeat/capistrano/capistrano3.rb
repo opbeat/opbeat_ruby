@@ -3,6 +3,12 @@ namespace :opbeat do
   task :notify do
     on roles(:app) do
 
+      scm = fetch(:scm)
+      if scm != "git"
+        info "Skipping Opbeat deployment because scm is not git."
+        return
+      end
+
       within repo_path do
         rev = fetch(:current_revision)
 
