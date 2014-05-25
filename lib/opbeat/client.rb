@@ -84,17 +84,9 @@ module Opbeat
       return MultiJson.encode(event_hash)
     end
 
-    def send_event(event)
-      return unless configuration.send_in_current_environment?
-      return unless state.should_try?
-
-      # Set the organization ID correctly
-      event.organization = self.configuration[:organization_id]
-      event.app = self.configuration[:app_id]
-      Opbeat.logger.debug "Sending event #{event.id} to Opbeat"
-      
+    def send(url_postfix, message)
       begin
-        response = self.conn.post @base_url + "/errors/" do |req|
+        response = self.conn.post @base_url + url_postfix do |req|
           req.headers['Content-Type'] = 'application/json'
           req.body = self.encode(event)
           req.headers[AUTH_HEADER_KEY] = self.generate_auth_header(req.body)
@@ -113,21 +105,21 @@ module Opbeat
       response
     end
 
+    def send_event(event)
+      return unless configuration.send_in_current_environment?
+      return unless state.should_try?
+
+      # Set the organization ID correctly
+      event.organization = self.configuration[:organization_id]
+      event.app = self.configuration[:app_id]
+      Opbeat.logger.debug "Sending event #{event.id} to Opbeat"
+      
+      send("/errors/", message)
+    end
+
     def send_release(release)
       Opbeat.logger.debug "Sending release to Opbeat"
-    
-      response = self.conn.post @base_url + "/releases/" do |req|
-        req.headers['Content-Type'] = 'application/json'
-        req.body = self.encode(release)
-        req.headers[AUTH_HEADER_KEY] = self.generate_auth_header(req.body)
-        req.headers["User-Agent"] = USER_AGENT
-      end
-
-      unless response.status == 202
-        raise Error.new("Error from Opbeat server (#{response.status}): #{response.body}")
-      end
-
-      response
+      send("/releases/", release)
     end
   end
 

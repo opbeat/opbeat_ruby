@@ -17,7 +17,7 @@ namespace :opbeat do
           branch = branches[0].sub("* ", "")
         else
           branch = nil
-        end  
+        end
 
         notify_command = "REV=#{rev} "
         notify_command << "BRANCH=#{branch} " if branch
