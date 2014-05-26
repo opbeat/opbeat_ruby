@@ -10,7 +10,11 @@ require 'opbeat/interfaces/stack_trace'
 require 'opbeat/interfaces/http'
 require 'opbeat/processors/sanitizedata'
 
+require 'opbeat/integrations/delayed_job'
+
+require 'opbeat/integrations/sidekiq' if defined?(Sidekiq)
 require 'opbeat/railtie' if defined?(Rails::Railtie)
+
 
 module Opbeat
   class << self
@@ -88,6 +92,7 @@ module Opbeat
     end
 
     def captureException(exception)
+      puts "in captureException"
       evt = Event.capture_exception(exception)
       send(evt) if evt
     end
