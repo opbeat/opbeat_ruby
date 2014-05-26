@@ -48,8 +48,8 @@ module Opbeat
       self.organization_id = ENV['OPBEAT_ORGANIZATION_ID'] if ENV['OPBEAT_ORGANIZATION_ID']
       self.app_id = ENV['OPBEAT_APP_ID'] if ENV['OPBEAT_APP_ID']
       @context_lines = 3
-      self.environments = %w[ production ]
-      self.current_environment = ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
+      self.environments = %w[ testing development production default ]
+      self.current_environment = ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'default'
       self.excluded_exceptions = []
       self.processors = [Opbeat::Processor::SanitizeData]
       self.timeout = 1

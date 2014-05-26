@@ -85,6 +85,7 @@ module Opbeat
     end
 
     def send(event)
+      return unless configuration.send_in_current_environment?
       return unless state.should_try?
 
       # Set the organization ID correctly
