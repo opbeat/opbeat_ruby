@@ -12,7 +12,6 @@ require 'opbeat/processors/sanitizedata'
 
 require 'opbeat/integrations/delayed_job'
 
-require 'opbeat/integrations/sidekiq' if defined?(Sidekiq)
 require 'opbeat/railtie' if defined?(Rails::Railtie)
 
 
