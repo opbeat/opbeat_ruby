@@ -22,6 +22,7 @@ module Opbeat
     attr_reader :id
     attr_accessor :organization, :app, :message, :timestamp, :level
     attr_accessor :logger, :culprit, :hostname, :modules, :extra
+    attr_accessor :environment
 
     def initialize(options={}, configuration=nil, &block)
       @configuration = configuration || Opbeat.configuration
@@ -33,6 +34,7 @@ module Opbeat
       @level = options[:level] || :error
       @logger = options[:logger] || 'root'
       @culprit = options[:culprit]
+      @environment = @configuration[:current_environment]
       @extra = options[:extra]
 
       # Try to resolve the hostname to an FQDN, but fall back to whatever the load name is
@@ -77,6 +79,7 @@ module Opbeat
       }
       data['culprit'] = self.culprit if self.culprit
       data['machine'] = {'hostname' => self.hostname } if self.hostname
+      data['environment'] = self.environment if self.environment
       data['extra'] = self.extra if self.extra
       @interfaces.each_pair do |name, int_data|
         data[name] = int_data.to_hash
