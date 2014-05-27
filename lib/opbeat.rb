@@ -91,7 +91,6 @@ module Opbeat
     end
 
     def captureException(exception)
-      puts "in captureException"
       evt = Event.capture_exception(exception)
       send(evt) if evt
     end
