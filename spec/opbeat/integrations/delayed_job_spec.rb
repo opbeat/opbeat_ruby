@@ -1,7 +1,16 @@
 require File::expand_path('../../../spec_helper', __FILE__)
-
+require 'time'
 require 'delayed_job'
 require 'opbeat/integrations/delayed_job'
+
+# turtles, all the way down
+# trying too hard
+require 'active_support/core_ext/time/calculations.rb'
+load File.join(
+  Gem::Specification.find_by_name("delayed_job").gem_dir,
+  "spec", "delayed", "backend", "test.rb"
+)
+
 
 class Bomb
   def blow_up ex
@@ -9,11 +18,6 @@ class Bomb
   end
 end
 
-# Trying too hard
-load File.join(
-  Gem::Specification.find_by_name("delayed_job").gem_dir,
-  "spec", "delayed", "backend", "test.rb"
-)
 
 Delayed::Worker.backend = Delayed::Backend::Test::Job
 
