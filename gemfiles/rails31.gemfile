@@ -4,5 +4,6 @@ gem "rails", "~> 3.1.6"
 gem "rake"
 gem "rspec"
 gem "simplecov"
+gem "delayed_job"
 
 gemspec :path => "../"
