@@ -1,4 +1,7 @@
-require 'delayed_job' rescue LoadError
+begin
+  require 'delayed_job'
+rescue LoadError
+end
 
 # Based on the Sentry equivalent.
 if defined?(Delayed)
