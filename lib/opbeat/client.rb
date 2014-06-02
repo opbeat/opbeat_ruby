@@ -114,7 +114,7 @@ module Opbeat
       event.app = self.configuration[:app_id]
       Opbeat.logger.debug "Sending event #{event.id} to Opbeat"
       
-      send("/errors/", message)
+      send("/errors/", event)
     end
 
     def send_release(release)
