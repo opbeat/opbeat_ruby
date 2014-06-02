@@ -26,6 +26,9 @@ module Opbeat
             notify_command = "cd #{current_release}; REV=#{current_revision} "
             notify_command << "BRANCH=#{branch} " if branch
 
+            rails_env = fetch(:rails_env, "production")
+            notify_command << "RAILS_ENV=#{RAILS_ENV} "
+
             executable = fetch(:rake, 'bundle exec rake ')
             notify_command << "#{executable} opbeat:deployment"
             capture notify_command, :once => true
