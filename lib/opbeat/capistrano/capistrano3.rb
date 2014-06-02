@@ -22,6 +22,9 @@ namespace :opbeat do
         notify_command = "REV=#{rev} "
         notify_command << "BRANCH=#{branch} " if branch
 
+        rails_env = fetch(:rails_env, "production")
+        notify_command << "RAILS_ENV=#{rails_env} "
+
         executable = fetch(:rake, 'bundle exec rake ')
         notify_command << "#{executable} opbeat:deployment"
         capture ("cd #{release_path};" + notify_command), :once => true
