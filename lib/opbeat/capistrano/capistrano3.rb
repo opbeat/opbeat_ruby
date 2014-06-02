@@ -4,7 +4,7 @@ namespace :opbeat do
     on roles(:app) do
 
       scm = fetch(:scm)
-      if scm != "git"
+      if scm.to_s != "git"
         info "Skipping Opbeat deployment because scm is not git."
         next
       end

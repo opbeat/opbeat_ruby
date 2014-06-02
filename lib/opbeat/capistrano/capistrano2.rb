@@ -11,7 +11,7 @@ module Opbeat
           task :notify, :except => { :no_release => true } do
 
             scm = fetch(:scm)
-            if scm != "git"
+            if scm.to_s != "git"
               puts "Skipping Opbeat deployment notification because scm is not git."
               next
             end
