@@ -88,7 +88,7 @@ module Opbeat
       begin
         response = self.conn.post @base_url + url_postfix do |req|
           req.headers['Content-Type'] = 'application/json'
-          req.body = self.encode(event)
+          req.body = self.encode(message)
           req.headers[AUTH_HEADER_KEY] = self.generate_auth_header(req.body)
           req.headers["User-Agent"] = USER_AGENT
         end
