@@ -10,7 +10,10 @@ require 'opbeat/interfaces/stack_trace'
 require 'opbeat/interfaces/http'
 require 'opbeat/processors/sanitizedata'
 
+require 'opbeat/integrations/delayed_job'
+
 require 'opbeat/railtie' if defined?(Rails::Railtie)
+
 
 module Opbeat
   class << self
