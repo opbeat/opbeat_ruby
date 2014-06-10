@@ -9,7 +9,7 @@ describe Opbeat::Client do
     @configuration.current_environment = :test
     @client = Opbeat::Client.new(@configuration)
     @client.stub(:send)
-   end
+  end
 
   it 'send_release should send' do
     message = "Test message"
