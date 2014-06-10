@@ -56,7 +56,7 @@ module Opbeat
     #   evt = Opbeat::Event.new(:message => "An error")
     #   Opbeat.send(evt)
     def send(evt)
-      @client.send(evt) if @client
+      @client.send_event(evt) if @client
     end
 
     # Capture and process any exceptions from the given block, or globally if

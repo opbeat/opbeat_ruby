@@ -60,8 +60,11 @@ module Opbeat
       raise Error.new('No app ID specified') unless self.configuration[:app_id]
 
       Opbeat.logger.debug "Opbeat client connecting to #{self.configuration[:server]}"
-      @url =  self.configuration[:server] + "/api/v1/organizations/" + self.configuration[:organization_id] +  "/apps/" + self.configuration[:app_id] + "/errors/"
-      @conn ||=  Faraday.new(:url => @url, :ssl => {:verify => self.configuration.ssl_verification}) do |builder|
+      @base_url = URI::join(self.configuration[:server],
+                            "/api/v1/organizations/",
+                            self.configuration[:organization_id],
+                            "/apps/", self.configuration[:app_id])
+      @conn ||=  Faraday.new(:url => @base_url, :ssl => {:verify => self.configuration.ssl_verification}) do |builder|
         builder.adapter  Faraday.default_adapter
       end
 
@@ -84,19 +87,11 @@ module Opbeat
       return MultiJson.encode(event_hash)
     end
 
-    def send(event)
-      return unless configuration.send_in_current_environment?
-      return unless state.should_try?
-
-      # Set the organization ID correctly
-      event.organization = self.configuration[:organization_id]
-      event.app = self.configuration[:app_id]
-      Opbeat.logger.debug "Sending event #{event.id} to Opbeat"
-      
+    def send(url_postfix, message)
       begin
-        response = self.conn.post @url do |req|
+        response = self.conn.post URI::join(@base_url, url_postfix) do |req|
           req.headers['Content-Type'] = 'application/json'
-          req.body = self.encode(event)
+          req.body = self.encode(message)
           req.headers[AUTH_HEADER_KEY] = self.generate_auth_header(req.body)
           req.headers["User-Agent"] = USER_AGENT
         end
@@ -113,6 +108,21 @@ module Opbeat
       response
     end
 
+    def send_event(event)
+      return unless configuration.send_in_current_environment?
+      return unless state.should_try?
+
+      # Set the organization ID correctly
+      event.organization = self.configuration[:organization_id]
+      event.app = self.configuration[:app_id]
+      Opbeat.logger.debug "Sending event #{event.id} to Opbeat"
+      send("/errors/", event)
+    end
+
+    def send_release(release)
+      Opbeat.logger.debug "Sending release to Opbeat"
+      send("/releases/", release)
+    end
   end
 
 end
