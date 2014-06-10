@@ -45,13 +45,14 @@ Basic RackUp file.
 ```ruby
 require 'opbeat'
 
+use Opbeat::Rack
+
 Opbeat.configure do |config|
   config.organization_id = '094e250818f44e82bfae13919f55fb35'
   config.app_id = '094e250818'
   config.secret_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
 end
 
-use Opbeat::Rack
 ```
 
 ### Sinatra
@@ -60,13 +61,13 @@ use Opbeat::Rack
 require 'sinatra'
 require 'opbeat'
 
+use Opbeat::Rack
+
 Opbeat.configure do |config|
   config.organization_id = '094e250818f44e82bfae13919f55fb35'
   config.app_id = '094e250818'
   config.secret_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
 end
-
-use Opbeat::Rack
 
 get '/' do
   1 / 0
