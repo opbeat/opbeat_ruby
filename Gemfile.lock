@@ -3,9 +3,9 @@ PATH
   specs:
     opbeat (0.6.0)
       faraday (~> 0.8.0.rc2)
-      hashie
+      hashie (~> 2.1.1)
       multi_json (~> 1.0)
-      uuidtools
+      uuidtools (~> 2.1.4)
 
 GEM
   remote: https://rubygems.org/
