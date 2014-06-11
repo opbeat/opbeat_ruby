@@ -19,5 +19,8 @@ module Opbeat
         ::ActionDispatch::ShowExceptions.send(:include, Opbeat::Rails::Middleware::DebugExceptionsCatcher)
       end
     end
+    rake_tasks do
+      require 'opbeat/tasks'
+    end
   end
 end

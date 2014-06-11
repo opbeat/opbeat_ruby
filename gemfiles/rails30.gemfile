@@ -4,6 +4,8 @@ gem "rails", "~> 3.0.15"
 gem "rake"
 gem "rspec"
 gem "simplecov"
-gem "sentry-raven", :path => "../"
+gem "delayed_job"
+
+gem "opbeat", :path => "../"
 
 gemspec :path => "../"
