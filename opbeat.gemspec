@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.summary = "A gem that provides a client interface for the Opbeat error logger"
   gem.email = "ron@opbeat.com"
   gem.homepage = "http://github.com/opbeat/opbeat_ruby"
-  gem.authors = ["Noah Kantrowitz", "Ron Cohen"]
+  gem.authors = ["Noah Kantrowitz", "Opbeat"]
   gem.has_rdoc = true
   gem.extra_rdoc_files = ["README.md", "LICENSE"]
   gem.files = Dir['lib/**/*']
