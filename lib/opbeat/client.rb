@@ -60,10 +60,10 @@ module Opbeat
       raise Error.new('No app ID specified') unless self.configuration[:app_id]
 
       Opbeat.logger.debug "Opbeat client connecting to #{self.configuration[:server]}"
-      @base_url = URI::join(self.configuration[:server],
-                            "/api/v1/organizations/",
-                            self.configuration[:organization_id],
-                            "/apps/", self.configuration[:app_id])
+      @base_url = self.configuration[:server] + 
+                            "/api/v1/organizations/" +
+                            self.configuration[:organization_id] +
+                            "/apps/" + self.configuration[:app_id]
       @conn ||=  Faraday.new(:url => @base_url, :ssl => {:verify => self.configuration.ssl_verification}) do |builder|
         builder.adapter  Faraday.default_adapter
       end
@@ -89,7 +89,7 @@ module Opbeat
 
     def send(url_postfix, message)
       begin
-        response = self.conn.post URI::join(@base_url, url_postfix) do |req|
+        response = self.conn.post @base_url + url_postfix do |req|
           req.headers['Content-Type'] = 'application/json'
           req.body = self.encode(message)
           req.headers[AUTH_HEADER_KEY] = self.generate_auth_header(req.body)
@@ -110,7 +110,10 @@ module Opbeat
 
     def send_event(event)
       return unless configuration.send_in_current_environment?
-      return unless state.should_try?
+      unless state.should_try?
+        Opbeat.logger.info "Temporarily skipping sending to Opbeat due to previous failure."
+        return
+      end
 
       # Set the organization ID correctly
       event.organization = self.configuration[:organization_id]
