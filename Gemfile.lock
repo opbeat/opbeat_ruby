@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    opbeat (0.6.0)
+    opbeat (0.6.1)
       faraday (~> 0.8.0.rc2)
       hashie (~> 2.1.1)
       multi_json (~> 1.0)
@@ -74,5 +74,5 @@ DEPENDENCIES
   pry
   rake
   rspec
-  sidekiq (= 2.17.0)
+  sidekiq (~> 2.17.0)
   simplecov
