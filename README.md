@@ -1,6 +1,6 @@
 # Opbeat
 
-<!-- [![Build Status](https://secure.travis-ci.org/opbeat/opbeat_ruby-ruby.png?branch=master)](http://travis-ci.org/opbeat/opbeat_ruby-ruby) -->
+[![Build Status](https://secure.travis-ci.org/opbeat/opbeat_ruby.png?branch=master)](http://travis-ci.org/opbeat/opbeat_ruby)
 
 A client and integration layer for [Opbeat](https://opbeat.com). Forked from the [raven-ruby](https://github.com/getsentry/raven-ruby) project.
 
@@ -13,11 +13,6 @@ Add the following to your `Gemfile`:
 gem "opbeat"
 ```
 
-<!-- Or install manually
-```bash
-$ gem install sentry-opbeat_ruby
-```
- -->
 ## Usage
 
 ### Rails 3 and Rails 4
