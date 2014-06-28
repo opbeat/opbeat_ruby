@@ -7,6 +7,7 @@ group :test do
   gem "rspec"
   gem "simplecov"
   gem "delayed_job"
+  gem "sidekiq", "~> 2.17.0"
 end
 
 group :development do
