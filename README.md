@@ -99,9 +99,9 @@ $ rake spec
 
 ## Notifications in development mode
 
-By default events will only be sent to Opbeat if your application is running in a production environment. This is configured by default if you are running a Rack application (i.e. anytime `ENV['RACK_ENV']` is set).
+By default events will be sent to Opbeat if your application is running in any of the following environments: `development`, `production`, `default`. Environment is set by default if you are running a Rack application (i.e. anytime `ENV['RACK_ENV']` is set).
 
-You can configure Opbeat to run in non-production environments by configuring the `environments` whitelist:
+You can configure Opbeat to run only in production environments by configuring the `environments` whitelist:
 
 ```ruby
 require 'opbeat'
@@ -111,7 +111,7 @@ Opbeat.configure do |config|
   config.app_id = '094e250818'
   config.secret_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
 
-  config.environments = %w[ development production ]
+  config.environments = %w[ production ]
 end
 ```
 
