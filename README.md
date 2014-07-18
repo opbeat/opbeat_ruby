@@ -90,6 +90,20 @@ Opbeat.capture do # Block style
 end
 ```
 
+## Background processing
+
+With [delayed_job](https://github.com/collectiveidea/delayed_job) and [sidekiq](http://sidekiq.org/), Opbeat will automatically pick up exceptions that are raised in background jobs. 
+
+To enable Opbeat for [resque](https://github.com/resque/resque), add the following (for example in `config/initializers/opbeat.rb`):
+
+```ruby
+require "resque/failure/multiple"
+require "opbeat/integrations/resque"
+
+Resque::Failure::Multiple.classes = [Resque::Failure::Opbeat]
+Resque::Failure.backend = Resque::Failure::Multiple
+```
+
 ## Testing
 
 ```bash
@@ -110,7 +124,6 @@ begin
   faultyCall
 rescue Exception => e
   Opbeat.captureException(e)
-  
 ```
 
 ## Notifications in development mode
