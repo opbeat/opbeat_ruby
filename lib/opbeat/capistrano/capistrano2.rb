@@ -5,7 +5,9 @@ module Opbeat
     def self.load_into(configuration)
 
       configuration.load do
-        after "deploy", "opbeat:notify"
+        after "deploy",            "opbeat:notify"
+        after "deploy:migrations", "opbeat:notify"
+        after "deploy:cold",       "opbeat:notify"
         namespace :opbeat do
           desc "Notifies Opbeat of new deployments"
           task :notify, :except => { :no_release => true } do
