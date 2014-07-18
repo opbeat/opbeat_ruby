@@ -97,6 +97,22 @@ $ bundle install
 $ rake spec
 ```
 
+## Explicitly notifying Opbeat
+
+It is possible to explicitely notify Opbeat. In the case of a simple message:
+```
+Opbeat.captureMessage("Not happy with the way things turned out")
+```
+
+If you want to catch and explicitely send an exception to Opbeat, this is the way to do it:
+```
+begin
+  faultyCall
+rescue Exception => e
+  Opbeat.captureException(e)
+  
+```
+
 ## Notifications in development mode
 
 By default events will be sent to Opbeat if your application is running in any of the following environments: `development`, `production`, `default`. Environment is set by default if you are running a Rack application (i.e. anytime `ENV['RACK_ENV']` is set).
