@@ -87,8 +87,8 @@ module Opbeat
       data
     end
 
-    def self.capture_exception(exc, configuration=nil, &block)
-      configuration ||= Opbeat.configuration
+    def self.capture_exception(exc, options={}, &block)
+      configuration = Opbeat.configuration
       if exc.is_a?(Opbeat::Error)
         # Try to prevent error reporting loops
         Opbeat.logger.info "Refusing to capture Opbeat error: #{exc.inspect}"
@@ -98,7 +98,7 @@ module Opbeat
         Opbeat.logger.info "User excluded error: #{exc.inspect}"
         return nil
       end
-      self.new({}, configuration) do |evt|
+      self.new(options, configuration) do |evt|
         evt.message = "#{exc.class.to_s}: #{exc.message}"
         evt.level = :error
         evt.parse_exception(exc)
@@ -114,9 +114,8 @@ module Opbeat
       end
     end
 
-    def self.capture_rack_exception(exc, rack_env, configuration=nil, &block)
-      configuration ||= Opbeat.configuration
-      capture_exception(exc, configuration) do |evt|
+    def self.capture_rack_exception(exc, rack_env, options={}, &block)
+      capture_exception(exc, options) do |evt|
         evt.interface :http do |int|
           int.from_rack(rack_env)
         end
@@ -124,9 +123,9 @@ module Opbeat
       end
     end
 
-    def self.capture_message(message, configuration=nil)
+    def self.capture_message(message, options={})
       configuration ||= Opbeat.configuration
-      self.new({}, configuration) do |evt|
+      self.new(options, configuration) do |evt|
         evt.message = message
         evt.level = :error
         evt.interface :message do |int|
