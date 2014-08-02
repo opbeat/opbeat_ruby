@@ -35,4 +35,5 @@ describe Opbeat do
 
     Opbeat.captureException(exception)
   end
+
 end

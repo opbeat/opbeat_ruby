@@ -3,10 +3,10 @@ module Opbeat
     module Middleware
       module DebugExceptionsCatcher
         def self.included(base)
-          base.send(:alias_method_chain, :render_exception, :raven)
+          base.send(:alias_method_chain, :render_exception, :opbeat)
         end
 
-        def render_exception_with_raven(env, exception)
+        def render_exception_with_opbeat(env, exception)
           begin
             evt = Opbeat::Event.capture_rack_exception(exception, env)
             Opbeat.send(evt) if evt
@@ -14,7 +14,7 @@ module Opbeat
             ::Rails::logger.debug "Error capturing or sending exception #{$!}"
           end
 
-          render_exception_without_raven(env, exception)
+          render_exception_without_opbeat(env, exception)
         end
       end
     end

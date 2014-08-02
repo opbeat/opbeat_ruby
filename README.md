@@ -104,13 +104,6 @@ Resque::Failure::Multiple.classes = [Resque::Failure::Opbeat]
 Resque::Failure.backend = Resque::Failure::Multiple
 ```
 
-## Testing
-
-```bash
-$ bundle install
-$ rake spec
-```
-
 ## Explicitly notifying Opbeat
 
 It is possible to explicitely notify Opbeat. In the case of a simple message:
@@ -125,6 +118,12 @@ begin
 rescue Exception => e
   Opbeat.captureException(e)
 ```
+
+Both `Opbeat.captureException` and `Opbeat.captureMessage` take additional `options`:
+```ruby
+Opbeat.captureMessage("Device registration error", :extra => {:device_id => my_device_id})
+```
+
 
 ## Notifications in development mode
 
@@ -181,6 +180,39 @@ Opbeat.configure do |config|
   config.processors = [Opbeat::Processor::SanitizeData]
 end
 ```
+
+## User information
+
+With Rails, Opbeat expects `controller#current_user` to return an object with `id`, `email` and/or `username` attributes. You can change the name of the current user method in the following manner:
+
+```ruby
+Opbeat.configure do |config|
+  ...
+
+  config.user_controller_method = "my_other_user_method"
+end
+```
+
+Opbeat will now call `controller#my_other_user_method` to retrieve the user object.
+
+## Setting context
+
+It is possible to set a context which be included an exceptions that are captured.
+
+```ruby
+Opbeat.set_context :extra => {:device_id => my_device_id}
+Opbeat.sendMessage("Hello world")  # will include the context
+end
+```
+
+
+## Testing
+
+```bash
+$ bundle install
+$ rake spec
+```
+
 
 ## Resources
 

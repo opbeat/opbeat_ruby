@@ -21,7 +21,7 @@ module Opbeat
 
     attr_reader :id
     attr_accessor :organization, :app, :message, :timestamp, :level
-    attr_accessor :logger, :culprit, :hostname, :modules, :extra
+    attr_accessor :logger, :culprit, :hostname, :modules, :extra, :user
     attr_accessor :environment
 
     def initialize(options={}, configuration=nil, &block)
@@ -36,6 +36,7 @@ module Opbeat
       @culprit = options[:culprit]
       @environment = @configuration[:current_environment]
       @extra = options[:extra]
+      @user = options[:user]
 
       # Try to resolve the hostname to an FQDN, but fall back to whatever the load name is
       hostname = Socket.gethostname
@@ -81,6 +82,12 @@ module Opbeat
       data['machine'] = {'hostname' => self.hostname } if self.hostname
       data['environment'] = self.environment if self.environment
       data['extra'] = self.extra if self.extra
+      if self.user
+        data['user'] = self.user
+        if self.user[:id] or self.user[:email] or self.user[:username]
+          data['user'][:is_authenticated] = true
+        end
+      end
       @interfaces.each_pair do |name, int_data|
         data[name] = int_data.to_hash
       end
@@ -98,6 +105,7 @@ module Opbeat
         Opbeat.logger.info "User excluded error: #{exc.inspect}"
         return nil
       end
+      options = self.merge_context(options)
       self.new(options, configuration) do |evt|
         evt.message = "#{exc.class.to_s}: #{exc.message}"
         evt.level = :error
@@ -119,12 +127,23 @@ module Opbeat
         evt.interface :http do |int|
           int.from_rack(rack_env)
         end
+
+        if not evt.user
+          controller = rack_env["action_controller.instance"]
+          user_method_name = Opbeat.configuration.user_controller_method
+          if controller and controller.respond_to? user_method_name
+            user_obj = controller.send user_method_name
+            evt.from_user_object(user_obj)
+          end
+        end        
+
         block.call(evt) if block
       end
     end
 
     def self.capture_message(message, options={})
       configuration ||= Opbeat.configuration
+      options = self.merge_context(options)
       self.new(options, configuration) do |evt|
         evt.message = message
         evt.level = :error
@@ -132,6 +151,10 @@ module Opbeat
           int.message = message
         end
       end
+    end
+
+    def self.set_context(options={})
+      Thread.current["_opbeat_context"] = options
     end
 
     def get_culprit(frames)
@@ -156,9 +179,16 @@ module Opbeat
       frame.filename = strip_load_path_from(frame.abs_path)
       if context_lines = @configuration[:context_lines]
         frame.pre_context, frame.context_line, frame.post_context = \
-          get_context(frame.abs_path, frame.lineno, context_lines)
+          get_contextlines(frame.abs_path, frame.lineno, context_lines)
       end
       frame
+    end
+
+    def from_user_object(user_obj)
+      @user = {} if not @user
+      @user[:id] = user_obj.send(:id) rescue nil
+      @user[:email] = user_obj.send(:email) rescue nil
+      @user[:username] = user_obj.send(:username) rescue nil
     end
 
     # For cross-language compat
@@ -169,11 +199,17 @@ module Opbeat
 
     private
 
+    def self.merge_context(options={})
+      context_options = Thread.current["_opbeat_context"] || {}
+      context_options.merge(options)
+    end
+
+
     # Because linecache can go to hell
     def self._source_lines(path, from, to)
     end
 
-    def get_context(path, line, context)
+    def get_contextlines(path, line, context)
       lines = (2 * context + 1).times.map do |i|
         Opbeat::LineCache::getline(path, line - context + i)
       end

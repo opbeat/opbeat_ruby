@@ -109,6 +109,22 @@ describe Opbeat::Event do
         end
       end
     end
-  end
 
+    context 'when there is user context' do
+      it 'sends the context and is_authenticated' do
+        Opbeat::Event.set_context(:user => {:id => 99})
+        hash = Opbeat::Event.capture_exception(exception).to_hash        
+        hash['user'].should eq({:id => 99, :is_authenticated => true})
+      end
+    end
+
+    context 'when there is extra context' do
+      it 'sends the context and is_authenticated' do
+        extra_context = {:jobid => 99}
+        Opbeat::Event.set_context(:extra => extra_context)
+        hash = Opbeat::Event.capture_exception(exception).to_hash        
+        hash['extra'].should eq(extra_context)
+      end
+    end
+  end
 end
