@@ -188,7 +188,6 @@ With Rails, Opbeat expects `controller#current_user` to return an object with `i
 ```ruby
 Opbeat.configure do |config|
   ...
-
   config.user_controller_method = "my_other_user_method"
 end
 ```
@@ -201,8 +200,8 @@ It is possible to set a context which be included an exceptions that are capture
 
 ```ruby
 Opbeat.set_context :extra => {:device_id => my_device_id}
-Opbeat.sendMessage("Hello world")  # will include the context
-end
+
+Opbeat.captureMessage("Hello world")  # will include the context
 ```
 
 
