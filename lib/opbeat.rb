@@ -19,7 +19,7 @@ require 'opbeat/railtie' if defined?(Rails::Railtie)
 module Opbeat
   class << self
     # The client object is responsible for delivering formatted data to the Opbeat server.
-    # Must respond to #send. See Opbeat::Client.
+    # Must respond to #send_event. See Opbeat::Client.
     attr_accessor :client
 
     # A Opbeat configuration object. Must act like a hash and return sensible
@@ -91,15 +91,18 @@ module Opbeat
       end
     end
 
-    def captureException(exception)
-      evt = Event.capture_exception(exception)
+    def captureException(exception, options={})
+      evt = Event.capture_exception(exception, options)
       send(evt) if evt
     end
 
-    def captureMessage(message)
-      evt = Event.capture_message(message)
+    def captureMessage(message, options={})
+      evt = Event.capture_message(message, options)
       send(evt) if evt
     end
 
+    def set_context(options={})
+      Event.set_context(options)
+    end
   end
 end

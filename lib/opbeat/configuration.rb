@@ -42,6 +42,8 @@ module Opbeat
 
     attr_reader :current_environment
 
+    attr_accessor :user_controller_method
+
     def initialize
       self.server = ENV['OPBEAT_SERVER'] || "https://opbeat.com"
       self.secret_token = ENV['OPBEAT_SECRET_TOKEN'] if ENV['OPBEAT_SECRET_TOKEN']
@@ -55,6 +57,7 @@ module Opbeat
       self.timeout = 1
       self.backoff_multiplier = 2
       self.ssl_verification = true
+      self.user_controller_method = 'current_user'
     end
 
     # Allows config options to be read like a hash
