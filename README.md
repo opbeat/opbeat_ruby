@@ -108,7 +108,7 @@ Resque::Failure.backend = Resque::Failure::Multiple
 
 It is possible to explicitely notify Opbeat. In the case of a simple message:
 ```
-Opbeat.captureMessage("Not happy with the way things turned out")
+Opbeat.capture_message("Not happy with the way things turned out")
 ```
 
 If you want to catch and explicitely send an exception to Opbeat, this is the way to do it:
@@ -116,12 +116,12 @@ If you want to catch and explicitely send an exception to Opbeat, this is the wa
 begin
   faultyCall
 rescue Exception => e
-  Opbeat.captureException(e)
+  Opbeat.capture_exception(e)
 ```
 
-Both `Opbeat.captureException` and `Opbeat.captureMessage` take additional `options`:
+Both `Opbeat.capture_exception` and `Opbeat.capture_message` take additional `options`:
 ```ruby
-Opbeat.captureMessage("Device registration error", :extra => {:device_id => my_device_id})
+Opbeat.capture_message("Device registration error", :extra => {:device_id => my_device_id})
 ```
 
 
@@ -201,7 +201,7 @@ It is possible to set a context which be included an exceptions that are capture
 ```ruby
 Opbeat.set_context :extra => {:device_id => my_device_id}
 
-Opbeat.captureMessage("Hello world")  # will include the context
+Opbeat.capture_message("Hello world")  # will include the context
 ```
 
 

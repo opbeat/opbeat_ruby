@@ -104,5 +104,8 @@ module Opbeat
     def set_context(options={})
       Event.set_context(options)
     end
+
+    alias :capture_exception :captureException
+    alias :capture_message :captureMessage
   end
 end
