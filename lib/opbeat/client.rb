@@ -95,7 +95,7 @@ module Opbeat
           req.headers[AUTH_HEADER_KEY] = self.generate_auth_header(req.body)
           req.headers["User-Agent"] = USER_AGENT
         end
-        unless response.status == 202
+        unless !response.status.between?(200, 299)
           raise Error.new("Error from Opbeat server (#{response.status}): #{response.body}")
         end
       rescue
