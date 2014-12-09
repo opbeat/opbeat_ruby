@@ -17,7 +17,7 @@ module Opbeat
 
     def should_try?
       return true if @status == :online
-        
+
       interval = ([@retry_number, 6].min() ** 2) * @configuration[:backoff_multiplier]
       return true if Time.now - @last_check > interval
 
@@ -79,11 +79,11 @@ module Opbeat
 
     def encode(event)
       event_hash = event.to_hash
-      
+
       @processors.each do |p|
         event_hash = p.process(event_hash)
       end
-      
+
       return MultiJson.encode(event_hash)
     end
 
@@ -95,7 +95,7 @@ module Opbeat
           req.headers[AUTH_HEADER_KEY] = self.generate_auth_header(req.body)
           req.headers["User-Agent"] = USER_AGENT
         end
-        unless !response.status.between?(200, 299)
+        if !response.status.between?(200, 299)
           raise Error.new("Error from Opbeat server (#{response.status}): #{response.body}")
         end
       rescue
