@@ -5,15 +5,15 @@ module Opbeat
   class HttpInterface < Interface
 
     name 'http'
-    property :url, :required => true
-    property :method, :required => true
-    property :data
-    property :query_string
-    property :cookies
-    property :headers
-    property :remote_host
-    property :http_host
-    property :env
+    attr_accessor :url
+    attr_accessor :method
+    attr_accessor :data
+    attr_accessor :query_string
+    attr_accessor :cookies
+    attr_accessor :headers
+    attr_accessor :remote_host
+    attr_accessor :http_host
+    attr_accessor :env
 
     def initialize(*arguments)
       self.headers = {}

@@ -5,8 +5,8 @@ module Opbeat
   class MessageInterface < Interface
 
     name 'param_message'
-    property :message, :required => true
-    property :params
+    attr_accessor :message
+    attr_accessor :params
 
     def initialize(*arguments)
       self.params = []

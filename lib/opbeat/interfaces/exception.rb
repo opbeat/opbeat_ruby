@@ -5,9 +5,9 @@ module Opbeat
   class ExceptionInterface < Interface
 
     name 'exception'
-    property :type, :required => true
-    property :value, :required => true
-    property :module
+    attr_accessor :type
+    attr_accessor :value
+    attr_accessor :module
 
   end
 
