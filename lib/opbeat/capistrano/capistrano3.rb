@@ -9,17 +9,13 @@ namespace :opbeat do
         next
       end
 
+      rev = fetch(:current_revision)
+      branch = fetch(:branch, 'master')
+
       within release_path do
-        rev = fetch(:current_revision)
-
-        branches = capture("cd #{repo_path}; /usr/bin/env git branch --contains #{rev}").split
-        if branches.length == 1
-          branch = branches[0].sub("* ", "")
-        else
-          branch = nil
+        with rails_env: fetch(:rails_env), rev: rev, branch: branch do
+          capture :rake, 'opbeat:deployment'
         end
-
-        capture :bundle, :exec, :rake, 'opbeat:deployment', "REV=#{rev}", "BRANCH=#{branch}"
       end
     end
 
