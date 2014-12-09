@@ -30,7 +30,9 @@ describe Delayed::Plugins::Opbeat do
     bomb = Bomb.new
     bomb.delay.blow_up test_exception
 
-    Delayed::Worker.new.work_off.should == [0, 1]
+    expect {
+      Delayed::Worker.new.work_off.should == [0, 1]
+    }.to raise_error(Exception)
   end
 end
 
