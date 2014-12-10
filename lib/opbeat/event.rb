@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'socket'
-require 'uuidtools'
 
 require 'opbeat/error'
 require 'opbeat/linecache'
@@ -28,7 +27,7 @@ module Opbeat
       @configuration = configuration || Opbeat.configuration
       @interfaces = {}
 
-      @id = options[:id] || UUIDTools::UUID.random_create.hexdigest
+      @id = options[:id]
       @message = options[:message]
       @timestamp = options[:timestamp] || Time.now.utc
       @level = options[:level] || :error
@@ -72,12 +71,12 @@ module Opbeat
 
     def to_hash
       data = {
-        'client_supplied_id' => self.id,
         'message' => self.message,
         'timestamp' => self.timestamp,
         'level' => self.level,
         'logger' => self.logger,
       }
+      data['client_supplied_id'] = self.id if self.id
       data['culprit'] = self.culprit if self.culprit
       data['machine'] = {'hostname' => self.hostname } if self.hostname
       data['environment'] = self.environment if self.environment
