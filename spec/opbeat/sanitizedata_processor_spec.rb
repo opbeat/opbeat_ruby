@@ -23,11 +23,11 @@ describe Opbeat::Processor::SanitizeData do
     result = @processor.process(data)
 
     vars = result["http"]["data"]
-    vars["foo"].should eq("bar")
-    vars["password"].should eq(Opbeat::Processor::SanitizeData::MASK)
-    vars["the_secret"].should eq(Opbeat::Processor::SanitizeData::MASK)
-    vars["a_password_here"].should eq(Opbeat::Processor::SanitizeData::MASK)
-    vars["mypasswd"].should eq(Opbeat::Processor::SanitizeData::MASK)
+    expect(vars["foo"]).to eq("bar")
+    expect(vars["password"]).to eq(Opbeat::Processor::SanitizeData::MASK)
+    expect(vars["the_secret"]).to eq(Opbeat::Processor::SanitizeData::MASK)
+    expect(vars["a_password_here"]).to eq(Opbeat::Processor::SanitizeData::MASK)
+    expect(vars["mypasswd"]).to eq(Opbeat::Processor::SanitizeData::MASK)
   end
 
   it 'should filter credit card values' do
@@ -36,7 +36,7 @@ describe Opbeat::Processor::SanitizeData do
     }
 
     result = @processor.process(data)
-    result["ccnumba"].should eq(Opbeat::Processor::SanitizeData::MASK)
+    expect(result["ccnumba"]).to eq(Opbeat::Processor::SanitizeData::MASK)
   end
 
 end

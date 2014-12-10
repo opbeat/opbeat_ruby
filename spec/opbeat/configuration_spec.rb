@@ -11,19 +11,19 @@ describe Opbeat::Configuration do
 
   shared_examples 'a complete configuration' do
     it 'should have a server' do
-      subject[:server].should == 'http://opbeat.localdomain/opbeat'
+      expect(subject[:server]).to eq('http://opbeat.localdomain/opbeat')
     end
 
     it 'should have an secret token' do
-      subject[:secret_token].should == '67890'
+      expect(subject[:secret_token]).to eq('67890')
     end
 
     it 'should have an organization ID' do
-      subject[:organization_id].should == '42'
+      expect(subject[:organization_id]).to eq('42')
     end
 
     it 'should have an app ID' do
-      subject[:app_id].should == '43'
+      expect(subject[:app_id]).to eq('43')
     end
   end
 

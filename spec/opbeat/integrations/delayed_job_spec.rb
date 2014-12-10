@@ -24,7 +24,7 @@ Delayed::Worker.backend = Delayed::Backend::Test::Job
 describe Delayed::Plugins::Opbeat do
   it 'should call Opbeat::captureException on erronous jobs' do
     test_exception = Exception.new("Test exception")
-    Opbeat.should_receive(:captureException).with(test_exception)
+    expect(Opbeat).to receive(:captureException).with(test_exception)
 
     # Queue
     bomb = Bomb.new

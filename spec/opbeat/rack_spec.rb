@@ -34,31 +34,31 @@ describe Opbeat::Rack do
   before do
     @send = double("send")
     @event = double("event")
-    Opbeat.stub(:send) { @send }
-    Opbeat::Event.stub(:capture_rack_exception) { @event }
+    allow(Opbeat).to receive(:send) { @send }
+    allow(Opbeat::Event).to receive(:capture_rack_exception) { @event }
   end
 
   it 'should capture exceptions' do
     exception = build_exception()
     env = {}
     
-    Opbeat::Event.should_receive(:capture_rack_exception).with(exception, env)
-    Opbeat.should_receive(:send).with(@event)
+    expect(Opbeat::Event).to receive(:capture_rack_exception).with(exception, env)
+    expect(Opbeat).to receive(:send).with(@event)
 
     app = lambda do |e|
       raise exception
     end
 
     stack = Opbeat::Rack.new(app)
-    lambda {stack.call(env)}.should raise_error(exception)
+    expect(lambda {stack.call(env)}).to raise_error(exception)
   end
 
   it 'should capture rack.exception' do
     exception = build_exception()
     env = {}
 
-    Opbeat::Event.should_receive(:capture_rack_exception).with(exception, env)
-    Opbeat.should_receive(:send).with(@event)
+    expect(Opbeat::Event).to receive(:capture_rack_exception).with(exception, env)
+    expect(Opbeat).to receive(:send).with(@event)
 
     app = lambda do |e|
       e['rack.exception'] = exception
@@ -78,7 +78,7 @@ describe Opbeat::Rack do
     @env = {
       'action_controller.instance' => TestController.new
     }
-    Opbeat::HttpInterface.stub(:new) { Opbeat::Interface.new }
+    allow(Opbeat::HttpInterface).to receive(:new) { Opbeat::Interface.new }
   end
 
   it 'should extract user info' do
@@ -86,10 +86,10 @@ describe Opbeat::Rack do
 
     Opbeat::Event.capture_rack_exception(@exception, @env) do |event|
       user = event.to_hash['user']
-      user[:id].should eq(expected_user.id)
-      user[:email].should eq(expected_user.email)
-      user[:username].should eq(expected_user.username)
-      user[:is_authenticated].should eq(true)
+      expect(user[:id]).to eq(expected_user.id)
+      expect(user[:email]).to eq(expected_user.email)
+      expect(user[:username]).to eq(expected_user.username)
+      expect(user[:is_authenticated]).to eq(true)
     end
   end
 
@@ -99,10 +99,10 @@ describe Opbeat::Rack do
 
     Opbeat::Event.capture_rack_exception(@exception, @env) do |event|
       user = event.to_hash['user']
-      user[:id].should eq(expected_user.id)
-      user[:email].should eq(expected_user.email)
-      user[:username].should eq(expected_user.username)
-      user[:is_authenticated].should eq(true)
+      expect(user[:id]).to eq(expected_user.id)
+      expect(user[:email]).to eq(expected_user.email)
+      expect(user[:username]).to eq(expected_user.username)
+      expect(user[:is_authenticated]).to eq(true)
     end
   end
 
@@ -111,7 +111,7 @@ describe Opbeat::Rack do
     expected_user = TestController.new.custom_user
 
     Opbeat::Event.capture_rack_exception(@exception, @env) do |event|
-      event.user.should eq(nil)
+      expect(event.user).to eq(nil)
     end
   end
 end
