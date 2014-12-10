@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "multi_json", "~> 1.0"
 
   gem.add_development_dependency "rake"
-  gem.add_development_dependency "rspec"
+  gem.add_development_dependency "rspec", ">= 2.14"
   gem.add_development_dependency "simplecov"
   gem.add_development_dependency "delayed_job"
   gem.add_development_dependency "sidekiq", "~> 2.17.0"
