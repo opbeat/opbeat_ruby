@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.require_paths    = ["lib"]
   gem.extra_rdoc_files = ["README.md", "LICENSE"]
 
-  gem.add_dependency "faraday", [">= 0.8", "< 0.10"]
+  gem.add_dependency "faraday", [">= 0.7.6", "< 0.10"]
   gem.add_dependency "multi_json", "~> 1.0"
 
   gem.add_development_dependency "rake"
