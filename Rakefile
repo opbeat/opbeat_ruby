@@ -1,7 +1,7 @@
 require 'rake'
 require 'rubygems/package_task'
 
-gemspec = eval(IO.read('opbeat.gemspec'))
+gemspec = Gem::Specification.load(Dir['*.gemspec'].first)
 
 Gem::PackageTask.new(gemspec).define
 
