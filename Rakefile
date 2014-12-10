@@ -12,7 +12,7 @@ begin
   end
 rescue LoadError
   task :spec do
-    abort "Rspec is not available. (sudo) bundle install to run unit tests"
+    abort "Rspec is not available. bundle install to run unit tests"
   end
 end
 
