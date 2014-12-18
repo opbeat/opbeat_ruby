@@ -12,7 +12,7 @@ Gem::Specification.new do |gem|
   gem.homepage         = "https://github.com/opbeat/opbeat_ruby"
   gem.license          = "Apache-2.0"
 
-  gem.files            = Dir['lib/**/*']
+  gem.files            = `git ls-files -z`.split("\x0")
   gem.require_paths    = ["lib"]
   gem.extra_rdoc_files = ["README.md", "LICENSE"]
 
