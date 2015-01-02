@@ -40,7 +40,7 @@ module Opbeat
   class Client
 
     PROTOCOL_VERSION = '1.0'
-    USER_AGENT = "opbeat/#{Opbeat::VERSION}"
+    USER_AGENT = "opbeat-ruby/#{Opbeat::VERSION}"
     AUTH_HEADER_KEY = 'Authorization'
 
     attr_accessor :configuration
