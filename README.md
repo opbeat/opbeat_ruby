@@ -204,6 +204,19 @@ Opbeat.set_context :extra => {:device_id => my_device_id}
 Opbeat.capture_message("Hello world")  # will include the context
 ```
 
+## Timeouts
+
+Opbeat uses a low default timeout. If you frequently experience timeouts, try increasing it in the following manner:
+
+```ruby
+Opbeat.configure do |config|
+  ...
+  config.timeout = 5
+  config.open_timeout = 5
+end
+```
+
+
 
 ## Testing
 
