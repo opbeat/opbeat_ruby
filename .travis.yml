@@ -1,13 +1,13 @@
 language: ruby
-gemfile:
-- gemfiles/rails30.gemfile
-- gemfiles/rails31.gemfile
-- gemfiles/rails32.gemfile
 rvm:
 - 1.9.2
 - 1.9.3
 - 2.0.0
 - 2.1.1
+gemfile:
+- gemfiles/rails30.gemfile
+- gemfiles/rails31.gemfile
+- gemfiles/rails32.gemfile
 bundler_args: "--without development"
 notifications:
   slack:
