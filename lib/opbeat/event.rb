@@ -86,6 +86,7 @@ module Opbeat
         if self.user[:id] or self.user[:email] or self.user[:username]
           data['user'][:is_authenticated] = true
         end
+        data['user'][:is_authenticated] = false if !data['user'][:is_authenticated]
       end
       @interfaces.each_pair do |name, int_data|
         data[name] = int_data.to_hash
