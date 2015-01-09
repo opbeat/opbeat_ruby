@@ -58,11 +58,12 @@ module Opbeat
     end
 
     def conn
-      @conn ||= Faraday.new(:url => @base_url, :ssl => { :verify => self.configuration.ssl_verification }) do |builder|
+      @conn ||= Faraday.new(@base_url) do |faraday|
         Opbeat.logger.debug "Initializing connection to #{self.configuration.server}"
-        builder.adapter Faraday.default_adapter
-        builder.options[:timeout] = self.configuration.timeout if self.configuration.timeout
-        builder.options[:open_timeout] = self.configuration.open_timeout if self.configuration.open_timeout
+        faraday.adapter Faraday.default_adapter
+        faraday.ssl[:verify] = self.configuration.ssl_verification
+        faraday.options[:timeout] = self.configuration.timeout if self.configuration.timeout
+        faraday.options[:open_timeout] = self.configuration.open_timeout if self.configuration.open_timeout
       end
     end
 
