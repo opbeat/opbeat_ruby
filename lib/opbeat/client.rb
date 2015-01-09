@@ -93,7 +93,9 @@ module Opbeat
           req.headers["Authorization"] = self.generate_auth_header(req.body)
           req.headers["User-Agent"] = USER_AGENT
         end
-        if !response.status.between?(200, 299)
+        if response.status.between?(200, 299)
+          Opbeat.logger.info "Event logged successfully at " + response.headers["location"]
+        else
           raise Error.new("Error from Opbeat server (#{response.status}): #{response.body}")
         end
       rescue
