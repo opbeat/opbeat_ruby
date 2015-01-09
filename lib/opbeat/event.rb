@@ -191,12 +191,6 @@ module Opbeat
       @user[:username] = user_obj.send(:username) rescue nil
     end
 
-    # For cross-language compat
-    class << self
-      alias :captionException :capture_exception
-      alias :captureMessage :capture_message
-    end
-
     private
 
     def self.merge_context(options={})
