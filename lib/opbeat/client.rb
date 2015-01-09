@@ -61,11 +61,9 @@ module Opbeat
       @conn ||= Faraday.new(:url => @base_url, :ssl => { :verify => self.configuration.ssl_verification }) do |builder|
         Opbeat.logger.debug "Initializing connection to #{self.configuration.server}"
         builder.adapter Faraday.default_adapter
+        builder.options[:timeout] = self.configuration.timeout if self.configuration.timeout
+        builder.options[:open_timeout] = self.configuration.open_timeout if self.configuration.open_timeout
       end
-
-      @conn.options[:timeout] = self.configuration.timeout
-      @conn.options[:open_timeout] = self.configuration.open_timeout
-      @conn
     end
 
     def encode(event)
