@@ -92,13 +92,23 @@ module Opbeat
     end
 
     def capture_exception(exception, options={})
-      evt = Event.from_exception(exception, options)
-      send(evt) if evt
+      if (evt = Event.from_exception(exception, options))
+        if self.configuration.async?
+          self.configuration.async.call(evt)
+        else
+          send(evt)
+        end
+      end
     end
 
     def capture_message(message, options={})
-      evt = Event.from_message(message, options)
-      send(evt) if evt
+      if (evt = Event.from_message(message, options))
+        if self.configuration.async?
+          self.configuration.async.call(evt)
+        else
+          send(evt)
+        end
+      end
     end
 
     def set_context(options={})

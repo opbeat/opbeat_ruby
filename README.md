@@ -216,6 +216,27 @@ Opbeat.configure do |config|
 end
 ```
 
+## Async Delivery
+
+When an error occurs, the notification is immediately sent to Opbeat.
+This will hold up the client HTTP request as long as the request to
+Opbeat is ongoing. Alternatively the agent can be configured to send
+notifications asynchronously.
+
+Example using a native Ruby `Thread`:
+
+```ruby
+Opbeat.configure do |config|
+  config.async = lambda { |event|
+    Thread.new { Opbeat.send(event) }
+  }
+end
+```
+
+Using this decoupled approach you can easily implement this into your
+existing background job infrastructure. The only requirement is that you
+at some point call the `Opbeat.send` method with the `event` object.
+
 ## Testing
 
 ```bash

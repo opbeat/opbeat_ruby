@@ -44,6 +44,9 @@ module Opbeat
 
     attr_accessor :user_controller_method
 
+    # Optional Proc to be used to send events asynchronously
+    attr_reader :async
+
     def initialize
       self.server = ENV['OPBEAT_SERVER'] || "https://opbeat.com"
       self.secret_token = ENV['OPBEAT_SECRET_TOKEN'] if ENV['OPBEAT_SECRET_TOKEN']
@@ -59,6 +62,7 @@ module Opbeat
       self.backoff_multiplier = 2
       self.ssl_verification = true
       self.user_controller_method = 'current_user'
+      self.async = false
     end
 
     # Allows config options to be read like a hash
@@ -75,6 +79,13 @@ module Opbeat
     def send_in_current_environment?
       environments.include? current_environment
     end
+
+    def async=(value)
+      raise ArgumentError.new("async must be callable (or false to disable)") unless (value == false || value.respond_to?(:call))
+      @async = value
+    end
+
+    alias_method :async?, :async
 
   end
 end

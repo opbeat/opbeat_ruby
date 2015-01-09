@@ -36,4 +36,29 @@ describe Opbeat do
     Opbeat.capture_exception(exception)
   end
 
+  context "async" do
+    it 'capture_message should send result of Event.from_message' do
+      async = lambda {}
+      message = "Test message"
+
+      expect(Opbeat::Event).to receive(:from_message).with(message, {})
+      expect(Opbeat).to_not receive(:send)
+      expect(async).to receive(:call).with(@event)
+
+      Opbeat.configuration.async = async
+      Opbeat.capture_message(message)
+    end
+
+    it 'capture_exception should send result of Event.from_exception' do
+      async = lambda {}
+      exception = build_exception()
+
+      expect(Opbeat::Event).to receive(:from_exception).with(exception, {})
+      expect(Opbeat).to_not receive(:send)
+      expect(async).to receive(:call).with(@event)
+
+      Opbeat.configuration.async = async
+      Opbeat.capture_exception(exception)
+    end
+  end
 end
