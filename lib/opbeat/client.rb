@@ -110,7 +110,7 @@ module Opbeat
       # Set the organization ID correctly
       event.organization = self.configuration.organization_id
       event.app = self.configuration.app_id
-      Opbeat.logger.debug "Sending event #{event.id} to Opbeat"
+      Opbeat.logger.debug "Sending event to Opbeat"
       send("/errors/", event)
     end
 
