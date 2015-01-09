@@ -54,6 +54,7 @@ module Opbeat
       @state = ClientState.new conf
       @processors = conf.processors.map { |p| p.new(self) }
       @base_url = "#{conf.server}/api/v1/organizations/#{conf.organization_id}/apps/#{conf.app_id}"
+      @auth_header = 'Bearer ' + conf.secret_token
     end
 
     def conn
@@ -81,7 +82,7 @@ module Opbeat
       begin
         response = self.conn.post @base_url + url_postfix do |req|
           req.body = self.encode(message)
-          req.headers['Authorization'] = 'Bearer ' + self.configuration[:secret_token]
+          req.headers['Authorization'] = @auth_header
           req.headers['Content-Type'] = 'application/json'
           req.headers['User-Agent'] = USER_AGENT
         end
