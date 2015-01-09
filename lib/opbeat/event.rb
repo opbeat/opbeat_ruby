@@ -94,7 +94,7 @@ module Opbeat
       data
     end
 
-    def self.capture_exception(exc, options={}, &block)
+    def self.from_exception(exc, options={}, &block)
       configuration = Opbeat.configuration
       if exc.is_a?(Opbeat::Error)
         # Try to prevent error reporting loops
@@ -122,8 +122,8 @@ module Opbeat
       end
     end
 
-    def self.capture_rack_exception(exc, rack_env, options={}, &block)
-      capture_exception(exc, options) do |evt|
+    def self.from_rack_exception(exc, rack_env, options={}, &block)
+      from_exception(exc, options) do |evt|
         evt.interface :http do |int|
           int.from_rack(rack_env)
         end
@@ -141,7 +141,7 @@ module Opbeat
       end
     end
 
-    def self.capture_message(message, options={})
+    def self.from_message(message, options={})
       configuration ||= Opbeat.configuration
       options = self.merge_context(options)
       self.new(options, configuration) do |evt|

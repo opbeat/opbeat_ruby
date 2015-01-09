@@ -92,12 +92,12 @@ module Opbeat
     end
 
     def captureException(exception, options={})
-      evt = Event.capture_exception(exception, options)
+      evt = Event.from_exception(exception, options)
       send(evt) if evt
     end
 
     def captureMessage(message, options={})
-      evt = Event.capture_message(message, options)
+      evt = Event.from_message(message, options)
       send(evt) if evt
     end
 

@@ -28,7 +28,7 @@ module Opbeat
       rescue Error => e
         raise # Don't capture Opbeat errors
       rescue Exception => e
-        evt = Event.capture_rack_exception(e, env)
+        evt = Event.from_rack_exception(e, env)
         Opbeat.send(evt)
         raise
       end
@@ -36,7 +36,7 @@ module Opbeat
       error = env['rack.exception'] || env['sinatra.error']
 
       if error
-        evt = Event.capture_rack_exception(error, env)
+        evt = Event.from_rack_exception(error, env)
         Opbeat.send(evt) if evt
       end
 

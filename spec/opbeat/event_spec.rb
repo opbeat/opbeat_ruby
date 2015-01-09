@@ -2,13 +2,13 @@ require File::expand_path('../../spec_helper', __FILE__)
 require 'opbeat'
 
 describe Opbeat::Event do
-  describe '.capture_message' do
+  describe '.from_message' do
     let(:message) { 'This is a message' }
-    let(:hash) { Opbeat::Event.capture_message(message).to_hash }
+    let(:hash) { Opbeat::Event.from_message(message).to_hash }
 
     context 'for a Message' do
       it 'returns an event' do
-        expect(Opbeat::Event.capture_message(message)).to be_a(Opbeat::Event)
+        expect(Opbeat::Event.from_message(message)).to be_a(Opbeat::Event)
       end
 
       it "sets the message to the value passed" do
@@ -21,14 +21,14 @@ describe Opbeat::Event do
     end
   end
 
-  describe '.capture_exception' do
+  describe '.from_exception' do
     let(:message) { 'This is a message' }
     let(:exception) { Exception.new(message) }
-    let(:hash) { Opbeat::Event.capture_exception(exception).to_hash }
+    let(:hash) { Opbeat::Event.from_exception(exception).to_hash }
 
     context 'for an Exception' do
       it 'returns an event' do
-        expect(Opbeat::Event.capture_exception(exception)).to be_a(Opbeat::Event)
+        expect(Opbeat::Event.from_exception(exception)).to be_a(Opbeat::Event)
       end
 
       it "sets the message to the exception's message and type" do
@@ -66,7 +66,7 @@ describe Opbeat::Event do
     context 'for a Opbeat::Error' do
       let(:exception) { Opbeat::Error.new }
       it 'does not create an event' do
-        expect(Opbeat::Event.capture_exception(exception)).to be_nil
+        expect(Opbeat::Event.from_exception(exception)).to be_nil
       end
     end
 
@@ -113,7 +113,7 @@ describe Opbeat::Event do
     context 'when there is user context' do
       it 'sends the context and is_authenticated' do
         Opbeat::Event.set_context(:user => {:id => 99})
-        hash = Opbeat::Event.capture_exception(exception).to_hash        
+        hash = Opbeat::Event.from_exception(exception).to_hash
         expect(hash['user']).to eq({:id => 99, :is_authenticated => true})
       end
     end
@@ -122,7 +122,7 @@ describe Opbeat::Event do
       it 'sends the context and is_authenticated' do
         extra_context = {:jobid => 99}
         Opbeat::Event.set_context(:extra => extra_context)
-        hash = Opbeat::Event.capture_exception(exception).to_hash        
+        hash = Opbeat::Event.from_exception(exception).to_hash
         expect(hash['extra']).to eq(extra_context)
       end
     end

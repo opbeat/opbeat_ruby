@@ -8,7 +8,7 @@ module Opbeat
 
         def render_exception_with_opbeat(env, exception)
           begin
-            evt = Opbeat::Event.capture_rack_exception(exception, env)
+            evt = Opbeat::Event.from_rack_exception(exception, env)
             Opbeat.send(evt) if evt
           rescue
             ::Rails::logger.debug "Error capturing or sending exception #{$!}"
