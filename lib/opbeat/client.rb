@@ -58,13 +58,13 @@ module Opbeat
     end
 
     def conn
-      Opbeat.logger.debug "Opbeat client connecting to #{self.configuration[:server]}"
-      @conn ||=  Faraday.new(:url => @base_url, :ssl => {:verify => self.configuration.ssl_verification}) do |builder|
-        builder.adapter  Faraday.default_adapter
+      Opbeat.logger.debug "Opbeat client connecting to #{self.configuration.server}"
+      @conn ||= Faraday.new(:url => @base_url, :ssl => { :verify => self.configuration.ssl_verification }) do |builder|
+        builder.adapter Faraday.default_adapter
       end
 
-      @conn.options[:timeout] = self.configuration[:timeout]
-      @conn.options[:open_timeout] = self.configuration[:open_timeout]
+      @conn.options[:timeout] = self.configuration.timeout
+      @conn.options[:open_timeout] = self.configuration.open_timeout
       @conn
     end
 
@@ -108,8 +108,8 @@ module Opbeat
       end
 
       # Set the organization ID correctly
-      event.organization = self.configuration[:organization_id]
-      event.app = self.configuration[:app_id]
+      event.organization = self.configuration.organization_id
+      event.app = self.configuration.app_id
       Opbeat.logger.debug "Sending event #{event.id} to Opbeat"
       send("/errors/", event)
     end
