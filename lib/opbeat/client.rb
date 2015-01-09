@@ -44,24 +44,20 @@ module Opbeat
     attr_accessor :configuration
     attr_accessor :state
 
-    def initialize(configuration)
-      @configuration = configuration
-      @state = ClientState.new configuration
-      @processors = configuration.processors.map { |p| p.new(self) }
+    def initialize(conf)
+      raise Error.new('No server specified') unless conf.server
+      raise Error.new('No secret token specified') unless conf.secret_token
+      raise Error.new('No organization ID specified') unless conf.organization_id
+      raise Error.new('No app ID specified') unless conf.app_id
+
+      @configuration = conf
+      @state = ClientState.new conf
+      @processors = conf.processors.map { |p| p.new(self) }
+      @base_url = "#{conf.server}/api/v1/organizations/#{conf.organization_id}/apps/#{conf.app_id}"
     end
 
     def conn
-      # Error checking
-      raise Error.new('No server specified') unless self.configuration[:server]
-      raise Error.new('No secret token specified') unless self.configuration[:secret_token]
-      raise Error.new('No organization ID specified') unless self.configuration[:organization_id]
-      raise Error.new('No app ID specified') unless self.configuration[:app_id]
-
       Opbeat.logger.debug "Opbeat client connecting to #{self.configuration[:server]}"
-      @base_url = self.configuration[:server] + 
-                            "/api/v1/organizations/" +
-                            self.configuration[:organization_id] +
-                            "/apps/" + self.configuration[:app_id]
       @conn ||=  Faraday.new(:url => @base_url, :ssl => {:verify => self.configuration.ssl_verification}) do |builder|
         builder.adapter  Faraday.default_adapter
       end

@@ -7,6 +7,9 @@ describe Opbeat::Client do
     @configuration = Opbeat::Configuration.new
     @configuration.environments = ["test"]
     @configuration.current_environment = :test
+    @configuration.secret_token = 'test'
+    @configuration.organization_id = 'test'
+    @configuration.app_id = 'test'
     @client = Opbeat::Client.new(@configuration)
     allow(@client).to receive(:send)
   end
