@@ -13,7 +13,7 @@ if defined?(Resque)
         # @param (see Resque::Failure::Base#save)
         # @return (see Resque::Failure::Base#save)
         def save
-          ::Opbeat.captureException(exception)
+          ::Opbeat.capture_exception(exception)
         end
       end
     end

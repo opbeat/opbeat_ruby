@@ -12,7 +12,7 @@ if defined? Sidekiq
             yield
           rescue Exception => ex
             raise ex if [Interrupt, SystemExit, SignalException].include? ex.class
-            ::Opbeat.captureException(ex)
+            ::Opbeat.capture_exception(ex)
             raise
           end
         end
@@ -26,7 +26,7 @@ if defined? Sidekiq
         chain.add ::Opbeat::Integrations::Sidekiq
       end
     else
-      config.error_handlers << Proc.new { |ex, ctx| ::Opbeat.captureException(ex) }
+      config.error_handlers << Proc.new { |ex, ctx| ::Opbeat.capture_exception(ex) }
     end
   end
 end

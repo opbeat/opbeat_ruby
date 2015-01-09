@@ -85,18 +85,18 @@ module Opbeat
         at_exit do
           if $!
             logger.debug "Caught a post-mortem exception: #{$!.inspect}"
-            self.captureException($!)
+            self.capture_exception($!)
           end
         end
       end
     end
 
-    def captureException(exception, options={})
+    def capture_exception(exception, options={})
       evt = Event.from_exception(exception, options)
       send(evt) if evt
     end
 
-    def captureMessage(message, options={})
+    def capture_message(message, options={})
       evt = Event.from_message(message, options)
       send(evt) if evt
     end
@@ -105,7 +105,7 @@ module Opbeat
       Event.set_context(options)
     end
 
-    alias :capture_exception :captureException
-    alias :capture_message :captureMessage
+    alias :captureException :capture_exception
+    alias :captureMessage :capture_message
   end
 end

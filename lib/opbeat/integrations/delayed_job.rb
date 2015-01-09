@@ -17,7 +17,7 @@ if defined?(Delayed)
 
             rescue Exception => exception
               # Log error to Opbeat
-              ::Opbeat.captureException(exception)
+              ::Opbeat.capture_exception(exception)
               # Make sure we propagate the failure!
               raise exception
             end

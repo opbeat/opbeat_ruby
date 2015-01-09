@@ -10,30 +10,30 @@ describe Opbeat do
     allow(Opbeat::Event).to receive(:from_exception) { @event }
   end
 
-  it 'captureMessage should send result of Event.from_message' do
+  it 'capture_message should send result of Event.from_message' do
     message = "Test message"
     expect(Opbeat::Event).to receive(:from_message).with(message, {})
     expect(Opbeat).to receive(:send).with(@event)
 
-    Opbeat.captureMessage(message)
+    Opbeat.capture_message(message)
   end
 
-  it 'captureMessage with options should send result of Event.from_message' do
+  it 'capture_message with options should send result of Event.from_message' do
     message = "Test message"
     options = {:extra => {:hello => "world"}}
     expect(Opbeat::Event).to receive(:from_message).with(message, options)
     expect(Opbeat).to receive(:send).with(@event)
 
-    Opbeat.captureMessage(message, options)
+    Opbeat.capture_message(message, options)
   end
 
-  it 'captureException should send result of Event.from_exception' do
+  it 'capture_exception should send result of Event.from_exception' do
     exception = build_exception()
 
     expect(Opbeat::Event).to receive(:from_exception).with(exception, {})
     expect(Opbeat).to receive(:send).with(@event)
 
-    Opbeat.captureException(exception)
+    Opbeat.capture_exception(exception)
   end
 
 end
