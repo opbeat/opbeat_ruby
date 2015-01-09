@@ -55,6 +55,7 @@ module Opbeat
       self.excluded_exceptions = []
       self.processors = [Opbeat::Processor::SanitizeData]
       self.timeout = 1
+      self.open_timeout = 1
       self.backoff_multiplier = 2
       self.ssl_verification = true
       self.user_controller_method = 'current_user'
