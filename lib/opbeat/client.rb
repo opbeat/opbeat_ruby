@@ -58,8 +58,8 @@ module Opbeat
     end
 
     def conn
-      Opbeat.logger.debug "Opbeat client connecting to #{self.configuration.server}"
       @conn ||= Faraday.new(:url => @base_url, :ssl => { :verify => self.configuration.ssl_verification }) do |builder|
+        Opbeat.logger.debug "Initializing connection to #{self.configuration.server}"
         builder.adapter Faraday.default_adapter
       end
 
