@@ -84,6 +84,7 @@ module Opbeat
           req.body = self.encode(message)
           req.headers['Authorization'] = @auth_header
           req.headers['Content-Type'] = 'application/json'
+          req.headers['Content-Length'] = req.body.bytesize.to_s
           req.headers['User-Agent'] = USER_AGENT
         end
         if response.status.between?(200, 299)
