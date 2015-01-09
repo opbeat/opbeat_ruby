@@ -216,8 +216,6 @@ Opbeat.configure do |config|
 end
 ```
 
-
-
 ## Testing
 
 ```bash
@@ -225,9 +223,7 @@ $ bundle install
 $ rake spec
 ```
 
-
 ## Resources
 
 * [Bug Tracker](http://github.com/opbeat/opbeat_ruby/issues)
 * [Code](http://github.com/opbeat/opbeat_ruby)
-
