@@ -71,10 +71,6 @@ module Opbeat
       @conn
     end
 
-    def generate_auth_header(data)
-      'Bearer ' + self.configuration[:secret_token]
-    end
-
     def encode(event)
       event_hash = event.to_hash
 
@@ -88,10 +84,10 @@ module Opbeat
     def send(url_postfix, message)
       begin
         response = self.conn.post @base_url + url_postfix do |req|
-          req.headers['Content-Type'] = 'application/json'
           req.body = self.encode(message)
-          req.headers["Authorization"] = self.generate_auth_header(req.body)
-          req.headers["User-Agent"] = USER_AGENT
+          req.headers['Authorization'] = 'Bearer ' + self.configuration[:secret_token]
+          req.headers['Content-Type'] = 'application/json'
+          req.headers['User-Agent'] = USER_AGENT
         end
         if response.status.between?(200, 299)
           Opbeat.logger.info "Event logged successfully at " + response.headers["location"]
