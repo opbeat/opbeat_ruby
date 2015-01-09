@@ -40,7 +40,6 @@ module Opbeat
   class Client
 
     USER_AGENT = "opbeat-ruby/#{Opbeat::VERSION}"
-    AUTH_HEADER_KEY = 'Authorization'
 
     attr_accessor :configuration
     attr_accessor :state
@@ -91,7 +90,7 @@ module Opbeat
         response = self.conn.post @base_url + url_postfix do |req|
           req.headers['Content-Type'] = 'application/json'
           req.body = self.encode(message)
-          req.headers[AUTH_HEADER_KEY] = self.generate_auth_header(req.body)
+          req.headers["Authorization"] = self.generate_auth_header(req.body)
           req.headers["User-Agent"] = USER_AGENT
         end
         if !response.status.between?(200, 299)
