@@ -79,7 +79,7 @@ module Opbeat
       data['client_supplied_id'] = self.id if self.id
       data['culprit'] = self.culprit if self.culprit
       data['machine'] = {'hostname' => self.hostname } if self.hostname
-      data['environment'] = self.environment if self.environment
+      data['environment'] = self.environment if self.environment # Future proofing: Environment is currently not used by the Opbeat API
       data['extra'] = self.extra || {}
       data['extra']['ruby'] = "#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}" unless data['extra']['ruby']
       data['extra']['rails'] = Rails::VERSION::STRING if defined?(Rails::VERSION::STRING) && !data['extra']['rails']
