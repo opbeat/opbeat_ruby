@@ -12,7 +12,7 @@ describe Opbeat do
 
   it 'capture_message should send result of Event.from_message' do
     message = "Test message"
-    expect(Opbeat::Event).to receive(:from_message).with(message, {})
+    expect(Opbeat::Event).to receive(:from_message).with(message, an_instance_of(Array), {})
     expect(Opbeat).to receive(:send).with(@event)
 
     Opbeat.capture_message(message)
@@ -21,7 +21,7 @@ describe Opbeat do
   it 'capture_message with options should send result of Event.from_message' do
     message = "Test message"
     options = {:extra => {:hello => "world"}}
-    expect(Opbeat::Event).to receive(:from_message).with(message, options)
+    expect(Opbeat::Event).to receive(:from_message).with(message, an_instance_of(Array), options)
     expect(Opbeat).to receive(:send).with(@event)
 
     Opbeat.capture_message(message, options)
@@ -41,7 +41,7 @@ describe Opbeat do
       async = lambda {}
       message = "Test message"
 
-      expect(Opbeat::Event).to receive(:from_message).with(message, {})
+      expect(Opbeat::Event).to receive(:from_message).with(message, an_instance_of(Array), {})
       expect(Opbeat).to_not receive(:send)
       expect(async).to receive(:call).with(@event)
 

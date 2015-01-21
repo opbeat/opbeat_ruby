@@ -4,11 +4,11 @@ require 'opbeat'
 describe Opbeat::Event do
   describe '.from_message' do
     let(:message) { 'This is a message' }
-    let(:hash) { Opbeat::Event.from_message(message).to_hash }
+    let(:hash) { Opbeat::Event.from_message(message, caller).to_hash }
 
     context 'for a Message' do
       it 'returns an event' do
-        expect(Opbeat::Event.from_message(message)).to be_a(Opbeat::Event)
+        expect(Opbeat::Event.from_message(message, caller)).to be_a(Opbeat::Event)
       end
 
       it "sets the message to the value passed" do

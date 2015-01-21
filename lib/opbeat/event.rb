@@ -141,7 +141,7 @@ module Opbeat
       end
     end
 
-    def self.from_message(message, options={})
+    def self.from_message(message, stack, options={})
       configuration ||= Opbeat.configuration
       options = self.merge_context(options)
       self.new(options, configuration) do |evt|
@@ -149,6 +149,11 @@ module Opbeat
         evt.level = :error
         evt.interface :message do |int|
           int.message = message
+        end
+        evt.interface :stack_trace do |int|
+          int.frames = stack.reverse.map do |trace_line|
+            int.frame {|frame| evt.parse_backtrace_line(trace_line, frame) }
+          end
         end
       end
     end

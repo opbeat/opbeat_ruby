@@ -102,7 +102,7 @@ module Opbeat
     end
 
     def capture_message(message, options={})
-      if (evt = Event.from_message(message, options))
+      if (evt = Event.from_message(message, caller, options))
         if self.configuration.async?
           self.configuration.async.call(evt)
         else
