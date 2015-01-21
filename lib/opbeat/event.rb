@@ -80,7 +80,9 @@ module Opbeat
       data['culprit'] = self.culprit if self.culprit
       data['machine'] = {'hostname' => self.hostname } if self.hostname
       data['environment'] = self.environment if self.environment
-      data['extra'] = self.extra if self.extra
+      data['extra'] = self.extra || {}
+      data['extra']['ruby'] = "#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}" unless data['extra']['ruby']
+      data['extra']['rails'] = Rails::VERSION::STRING if defined?(Rails::VERSION::STRING) && !data['extra']['rails']
       if self.user
         data['user'] = self.user
         if self.user[:id] or self.user[:email] or self.user[:username]
