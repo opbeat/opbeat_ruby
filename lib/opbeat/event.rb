@@ -140,7 +140,7 @@ module Opbeat
     end
 
     def self.from_message(message, stack, options={})
-      configuration ||= Opbeat.configuration
+      configuration = Opbeat.configuration
       options = self.merge_context(options)
       self.new(options, configuration) do |evt|
         evt.message = message

@@ -3,7 +3,6 @@ require 'opbeat'
 
 describe Opbeat::Client do
   before do
-
     @configuration = Opbeat::Configuration.new
     @configuration.environments = ["test"]
     @configuration.current_environment = :test
