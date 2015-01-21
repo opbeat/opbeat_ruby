@@ -110,13 +110,11 @@ module Opbeat
         evt.message = "#{exc.class.to_s}: #{exc.message}"
         evt.level = :error
         evt.parse_exception(exc)
-        if (exc.backtrace)
-          evt.interface :stack_trace do |int|
-            int.frames = exc.backtrace.reverse.map do |trace_line|
-              int.frame {|frame| evt.parse_backtrace_line(trace_line, frame) }
-            end
-            evt.culprit = evt.get_culprit(int.frames)
+        evt.interface :stack_trace do |int|
+          int.frames = exc.backtrace.reverse.map do |trace_line|
+            int.frame {|frame| evt.parse_backtrace_line(trace_line, frame) }
           end
+          evt.culprit = evt.get_culprit(int.frames)
         end
         block.call(evt) if block
       end

@@ -92,6 +92,7 @@ module Opbeat
     end
 
     def capture_exception(exception, options={})
+      exception.set_backtrace caller unless exception.backtrace
       if (evt = Event.from_exception(exception, options))
         if self.configuration.async?
           self.configuration.async.call(evt)

@@ -23,7 +23,11 @@ describe Opbeat::Event do
 
   describe '.from_exception' do
     let(:message) { 'This is a message' }
-    let(:exception) { Exception.new(message) }
+    let(:exception) {
+      exc = Exception.new(message)
+      exc.set_backtrace caller
+      exc
+    }
     let(:hash) { Opbeat::Event.from_exception(exception).to_hash }
 
     context 'for an Exception' do
@@ -56,7 +60,11 @@ describe Opbeat::Event do
       module Opbeat::Test
         class Exception < Exception; end
       end
-      let(:exception) { Opbeat::Test::Exception.new(message) }
+      let(:exception) {
+        exc = Opbeat::Test::Exception.new(message)
+        exc.set_backtrace caller
+        exc
+      }
 
       it 'sends the module name as part of the exception info' do
         expect(hash['exception']['module']).to eq('Opbeat::Test')
