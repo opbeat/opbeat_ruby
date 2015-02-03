@@ -31,7 +31,6 @@ matrix:
       gemfile: gemfiles/rails41.gemfile
     - rvm: 1.9.2
       gemfile: gemfiles/rails42.gemfile
-bundler_args: "--without development"
 notifications:
   slack:
     secure: IniiL3PdFsht2zykTwd/z5Et/L1U6GzsmMC1LrgccKCrvLsdcdlBU3VrAgIb1GT9FPEFpb5sl7FEBN80p6uW15uO57onUawFaSWDhSA3eXG1ImmunVPJ20U4NkJvMbnUdZXQ9XXqOw1ggkR7GrD0PM9Nzr4puWaaGq42UJjdaq0=
