@@ -25,8 +25,8 @@ module Opbeat
     # Which exceptions should never be sent
     attr_accessor :excluded_exceptions
 
-    # Processors to run on data before sending upstream
-    attr_accessor :processors
+    # An array of parameters whould should be filtered from the log
+    attr_accessor :filter_parameters
 
     # Timeout when waiting for the server to return data in seconds
     attr_accessor :timeout
@@ -56,7 +56,6 @@ module Opbeat
       self.environments = %w[ development production default ]
       self.current_environment = (defined?(::Rails) && ::Rails.env) || ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'default'
       self.excluded_exceptions = []
-      self.processors = [Opbeat::Processor::SanitizeData]
       self.timeout = 1
       self.open_timeout = 1
       self.backoff_multiplier = 2

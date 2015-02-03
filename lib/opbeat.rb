@@ -8,7 +8,6 @@ require 'opbeat/interfaces/message'
 require 'opbeat/interfaces/exception'
 require 'opbeat/interfaces/stack_trace'
 require 'opbeat/interfaces/http'
-require 'opbeat/processors/sanitizedata'
 
 require 'opbeat/integrations/delayed_job'
 require 'opbeat/integrations/sidekiq'
