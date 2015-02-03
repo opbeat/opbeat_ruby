@@ -2,8 +2,8 @@
 namespace :opbeat do
   desc "Notify Opbeat of a new deploy."
   task :deployment do
-    if defined?(Rails.root)
-      initializer_file = Rails.root.join('config', 'initializers','opbeat.rb')
+    if defined?(::Rails.root)
+      initializer_file = ::Rails.root.join('config', 'initializers','opbeat.rb')
 
       if initializer_file.exist?
         load initializer_file

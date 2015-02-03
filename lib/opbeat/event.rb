@@ -82,7 +82,7 @@ module Opbeat
       data['environment'] = self.environment if self.environment # Future proofing: Environment is currently not used by the Opbeat API
       data['extra'] = self.extra || {}
       data['extra']['ruby'] = "#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}" unless data['extra']['ruby']
-      data['extra']['rails'] = Rails::VERSION::STRING if defined?(Rails::VERSION::STRING) && !data['extra']['rails']
+      data['extra']['rails'] = ::Rails::VERSION::STRING if defined?(::Rails::VERSION::STRING) && !data['extra']['rails']
       if self.user
         data['user'] = self.user
         if self.user[:id] or self.user[:email] or self.user[:username]
