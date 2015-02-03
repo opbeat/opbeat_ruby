@@ -86,9 +86,7 @@ module Opbeat
           req.headers['Content-Length'] = req.body.bytesize.to_s
           req.headers['User-Agent'] = USER_AGENT
         end
-        if response.status.between?(200, 299)
-          Opbeat.logger.info "Event logged successfully at " + response.headers["location"]
-        else
+        unless response.status.between?(200, 299)
           raise Error.new("Error from Opbeat server (#{response.status}): #{response.body}")
         end
       rescue
@@ -111,7 +109,11 @@ module Opbeat
       event.organization = self.configuration.organization_id
       event.app = self.configuration.app_id
       Opbeat.logger.debug "Sending event to Opbeat"
-      send("/errors/", event)
+      response = send("/errors/", event)
+      if response.status.between?(200, 299)
+        Opbeat.logger.info "Event logged successfully at " + response.headers["location"].to_s
+      end
+      response
     end
 
     def send_release(release)

@@ -1,5 +1,12 @@
 require File::expand_path('../../spec_helper', __FILE__)
 require 'opbeat'
+require 'faraday'
+
+http = Faraday.new do |builder|
+  builder.adapter :test do |stub|
+    stub.get('/') { |env| [ 200, {}, 'foo' ]}
+  end
+end
 
 describe Opbeat::Client do
   before do
@@ -21,7 +28,8 @@ describe Opbeat::Client do
 
   it 'send_message should send' do
     event = Opbeat::Event.new :message => "my message"
-    expect(@client).to receive(:send).with("/errors/", event)
+    req = http.get '/'
+    expect(@client).to receive(:send).with("/errors/", event).and_return(req)
     @client.send_event(event)
   end
 end
