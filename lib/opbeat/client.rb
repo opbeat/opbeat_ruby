@@ -5,6 +5,7 @@ require 'faraday'
 
 require 'opbeat/version'
 require 'opbeat/error'
+require 'opbeat/filter'
 
 module Opbeat
 
@@ -52,7 +53,7 @@ module Opbeat
 
       @configuration = conf
       @state = ClientState.new conf
-      @processors = conf.processors.map { |p| p.new(self) }
+      @filter = Filter.new conf.filter_parameters
       @base_url = "#{conf.server}/api/v1/organizations/#{conf.organization_id}/apps/#{conf.app_id}"
       @auth_header = 'Bearer ' + conf.secret_token
     end
@@ -69,11 +70,7 @@ module Opbeat
 
     def encode(event)
       event_hash = event.to_hash
-
-      @processors.each do |p|
-        event_hash = p.process(event_hash)
-      end
-
+      event_hash = @filter.process_event_hash(event_hash)
       return MultiJson.encode(event_hash)
     end
 

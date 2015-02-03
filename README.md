@@ -165,13 +165,23 @@ Opbeat.configure do |config|
 end
 ```
 
-## Sanitizing Data (Processors)
+## Sanitizing Data
 
-If you need to sanitize or pre-process (before its sent to the server) data, you can do so using the Processors
-implementation. By default, a single processor is installed (Opbeat::Processors::SanitizeData), which will attempt to
-sanitize keys that match various patterns (e.g. password) and values that resemble credit card numbers.
+The Opbeat agent will sanitize the data sent to the Opbeat server based
+on the following rules.
 
-To specify your own (or to remove the defaults), simply pass them with your configuration:
+If you are running Rails, the agent will first try to fetch the
+filtering settings from `Rails.application.config.filter_parameters`.
+
+If those are not set (or if you are not running Rails), the agent will
+fall back to its own defaults:
+
+```ruby
+/(authorization|password|passwd|secret)/i
+```
+
+To specify your own (or to remove the defaults), simply set the
+`filter_parameters` configuration parameter:
 
 ```ruby
 require 'opbeat'
@@ -181,9 +191,12 @@ Opbeat.configure do |config|
   config.app_id = '094e250818'
   config.secret_token = 'f0f5237a221637f561a15614f5fef218f8d6317d'
   
-  config.processors = [Opbeat::Processor::SanitizeData]
+  config.filter_parameters = [:credit_card, /^pass(word)$/i]
 end
 ```
+
+Note that only the `data`, `query_string` and `cookies` fields under
+`http` are filtered.
 
 ## User information
 
