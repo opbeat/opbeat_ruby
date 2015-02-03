@@ -1,6 +1,6 @@
 # Opbeat
 
-[![Build Status](https://secure.travis-ci.org/opbeat/opbeat_ruby.png?branch=master)](http://travis-ci.org/opbeat/opbeat_ruby)
+[![Build Status](https://travis-ci.org/opbeat/opbeat_ruby.svg?branch=master)](https://travis-ci.org/opbeat/opbeat_ruby)
 
 A client and integration layer for [Opbeat](https://opbeat.com). Forked from the [raven-ruby](https://github.com/getsentry/raven-ruby) project.
 
