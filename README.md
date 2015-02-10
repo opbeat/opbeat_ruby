@@ -4,14 +4,18 @@
 
 A client and integration layer for [Opbeat](https://opbeat.com). Forked from the [raven-ruby](https://github.com/getsentry/raven-ruby) project.
 
-
 ## Installation
 
 Add the following to your `Gemfile`:
 
 ```ruby
-gem "opbeat"
+gem "opbeat", "~> 1.1", ">= 1.1.1"
 ```
+
+The Opbeat gem adhere to [Semantic
+Versioning](http://guides.rubygems.org/patterns/#semantic-versioning)
+and so you can safely trust all major versions (e.g. 1.x) to be
+backwards compatible.
 
 ## Usage
 
