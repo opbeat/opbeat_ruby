@@ -1,7 +1,7 @@
 require 'openssl'
 require 'uri'
+require 'net/http'
 require 'multi_json'
-require 'faraday'
 
 require 'opbeat/version'
 require 'opbeat/error'
@@ -53,17 +53,23 @@ module Opbeat
       @configuration = conf
       @state = ClientState.new conf
       @processors = conf.processors.map { |p| p.new(self) }
-      @base_url = "#{conf.server}/api/v1/organizations/#{conf.organization_id}/apps/#{conf.app_id}"
+      @base_path = "/api/v1/organizations/#{conf.organization_id}/apps/#{conf.app_id}"
       @auth_header = 'Bearer ' + conf.secret_token
     end
 
     def conn
-      @conn ||= Faraday.new(@base_url) do |faraday|
+      @conn ||= begin
         Opbeat.logger.debug "Initializing connection to #{self.configuration.server}"
-        faraday.adapter Faraday.default_adapter
-        faraday.ssl[:verify] = self.configuration.ssl_verification
-        faraday.options[:timeout] = self.configuration.timeout if self.configuration.timeout
-        faraday.options[:open_timeout] = self.configuration.open_timeout if self.configuration.open_timeout
+        uri = URI.parse(self.configuration.server)
+        conn = Net::HTTP.new(uri.host, uri.port)
+        conn.read_timeout = conn.open_timeout = self.configuration.timeout if self.configuration.timeout
+        conn.open_timeout = self.configuration.open_timeout if self.configuration.open_timeout
+        conn.keep_alive_timeout = self.configuration.keep_alive_timeout if self.configuration.keep_alive_timeout
+        conn.use_ssl = true
+        conn.verify_mode = self.configuration.ssl_verification ?
+          OpenSSL::SSL::VERIFY_PEER | OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT :
+          OpenSSL::SSL::VERIFY_NONE
+        conn
       end
     end
 
@@ -79,15 +85,16 @@ module Opbeat
 
     def send(url_postfix, message)
       begin
-        response = self.conn.post @base_url + url_postfix do |req|
-          req.body = self.encode(message)
-          req.headers['Authorization'] = @auth_header
-          req.headers['Content-Type'] = 'application/json'
-          req.headers['Content-Length'] = req.body.bytesize.to_s
-          req.headers['User-Agent'] = USER_AGENT
-        end
-        unless response.status.between?(200, 299)
-          raise Error.new("Error from Opbeat server (#{response.status}): #{response.body}")
+        req = Net::HTTP::Post.new(@base_path + url_postfix)
+        req.body = self.encode(message)
+        req.add_field('Authorization', @auth_header)
+        req.add_field('Content-Type', 'application/json')
+        req.add_field('Content-Length', req.body.bytesize)
+        req.add_field('User-Agent', USER_AGENT)
+        response = self.conn.request(req)
+        code = response.code.to_i
+        unless code.between?(200, 299)
+          raise Error.new("Error from Opbeat server (#{code}): #{response.body}")
         end
       rescue
         @state.set_fail
