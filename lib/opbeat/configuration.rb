@@ -48,7 +48,7 @@ module Opbeat
     attr_reader :async
 
     def initialize
-      self.server = ENV['OPBEAT_SERVER'] || "https://opbeat.com"
+      self.server = ENV['OPBEAT_SERVER'] || "https://intake.opbeat.com"
       self.secret_token = ENV['OPBEAT_SECRET_TOKEN'] if ENV['OPBEAT_SECRET_TOKEN']
       self.organization_id = ENV['OPBEAT_ORGANIZATION_ID'] if ENV['OPBEAT_ORGANIZATION_ID']
       self.app_id = ENV['OPBEAT_APP_ID'] if ENV['OPBEAT_APP_ID']
