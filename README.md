@@ -14,8 +14,8 @@ gem "opbeat", "~> 1.1", ">= 1.1.1"
 
 The Opbeat gem adhere to [Semantic
 Versioning](http://guides.rubygems.org/patterns/#semantic-versioning)
-and so you can safely trust all major versions (e.g. 1.x) to be
-backwards compatible.
+and so you can safely trust all minor and patch versions (e.g. 1.x.x) to
+be backwards compatible.
 
 ## Usage
 
