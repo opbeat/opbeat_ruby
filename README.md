@@ -9,12 +9,12 @@ A client and integration layer for [Opbeat](https://opbeat.com). Forked from the
 Add the following to your `Gemfile`:
 
 ```ruby
-gem "opbeat", "~> 1.1", ">= 1.1.1"
+gem "opbeat", "~> 2.0"
 ```
 
 The Opbeat gem adhere to [Semantic
 Versioning](http://guides.rubygems.org/patterns/#semantic-versioning)
-and so you can safely trust all minor and patch versions (e.g. 1.x.x) to
+and so you can safely trust all minor and patch versions (e.g. 2.x.x) to
 be backwards compatible.
 
 ## Usage
