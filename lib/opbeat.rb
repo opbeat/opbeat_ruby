@@ -101,6 +101,17 @@ module Opbeat
       end
     end
 
+    def capture_rack_exception(exception, env, options={})
+      exception.set_backtrace caller unless exception.backtrace
+      if (evt = Event.from_rack_exception(exception, env, options))
+        if self.configuration.async?
+          self.configuration.async.call(evt)
+        else
+          send(evt)
+        end
+      end
+    end
+
     def capture_message(message, options={})
       if (evt = Event.from_message(message, caller, options))
         if self.configuration.async?

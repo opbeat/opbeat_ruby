@@ -8,6 +8,7 @@ describe Opbeat do
     allow(Opbeat).to receive(:send) { @send }
     allow(Opbeat::Event).to receive(:from_message) { @event }
     allow(Opbeat::Event).to receive(:from_exception) { @event }
+    allow(Opbeat::Event).to receive(:from_rack_exception) { @event }
   end
 
   it 'capture_message should send result of Event.from_message' do
@@ -34,6 +35,26 @@ describe Opbeat do
     expect(Opbeat).to receive(:send).with(@event)
 
     Opbeat.capture_exception(exception)
+  end
+
+  it 'capture_rack_exception should send result of Event.from_exception built with env and default options' do
+    exception = build_exception()
+    rack_env = build_rack_env()
+
+    expect(Opbeat::Event).to receive(:from_rack_exception).with(exception, rack_env, {})
+    expect(Opbeat).to receive(:send).with(@event)
+
+    Opbeat.capture_rack_exception(exception, rack_env)
+  end
+
+  it "capture_rack_exception should send result of Event.from_exception built with env and options" do
+    exception = build_exception()
+    rack_env = build_rack_env()
+
+    expect(Opbeat::Event).to receive(:from_rack_exception).with(exception, rack_env, {:custom => :param})
+    expect(Opbeat).to receive(:send).with(@event)
+
+    Opbeat.capture_rack_exception(exception, rack_env, {:custom => :param})
   end
 
   context "async" do
