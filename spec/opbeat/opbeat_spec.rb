@@ -58,6 +58,10 @@ describe Opbeat do
   end
 
   context "async" do
+    after do
+      Opbeat.configuration.async = false
+    end
+
     it 'capture_message should send result of Event.from_message' do
       async = lambda {}
       message = "Test message"
