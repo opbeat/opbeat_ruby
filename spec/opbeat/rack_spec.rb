@@ -41,9 +41,8 @@ describe Opbeat::Rack do
   it 'should capture exceptions' do
     exception = build_exception()
     env = {}
-    
-    expect(Opbeat::Event).to receive(:from_rack_exception).with(exception, env)
-    expect(Opbeat).to receive(:send).with(@event)
+
+    expect(Opbeat).to receive(:capture_rack_exception).with(exception, env)
 
     app = lambda do |e|
       raise exception
@@ -57,8 +56,7 @@ describe Opbeat::Rack do
     exception = build_exception()
     env = {}
 
-    expect(Opbeat::Event).to receive(:from_rack_exception).with(exception, env)
-    expect(Opbeat).to receive(:send).with(@event)
+    expect(Opbeat).to receive(:capture_rack_exception).with(exception, env)
 
     app = lambda do |e|
       e['rack.exception'] = exception
