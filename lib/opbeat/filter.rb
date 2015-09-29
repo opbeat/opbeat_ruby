@@ -57,7 +57,7 @@ module Opbeat
     end
 
     def process_string(str, separator='&')
-      str.split(separator).map { |s| s.split('=') }.map { |a| a[0]+'='+sanitize(a[0], a[1]) }.join(separator)
+      str.split(separator).map { |s| s.split('=') }.map { |k,v| "#{k}=#{sanitize(k, v)}" }.join(separator)
     end
   end
 end
