@@ -1,4 +1,5 @@
-require File::expand_path('../../../spec_helper', __FILE__)
+require File.expand_path('../../../spec_helper', __FILE__)
+require 'opbeat'
 require 'time'
 require 'delayed_job'
 require 'opbeat/integrations/delayed_job'
@@ -12,27 +13,23 @@ load File.join(
 )
 
 
-class Bomb
-  def blow_up ex
-    raise ex
-  end
-end
-
-
 Delayed::Worker.backend = Delayed::Backend::Test::Job
 
 describe Delayed::Plugins::Opbeat do
+  class MyException < StandardError; end
+
+  class Bomb
+    def blow_up ex
+      raise ex
+    end
+  end
+
   it 'should call Opbeat::capture_exception on erronous jobs' do
-    test_exception = Exception.new("Test exception")
-    expect(Opbeat).to receive(:capture_exception).with(test_exception)
+    test_exception = MyException.new("Test exception")
+    expect(::Opbeat).to receive(:capture_exception).with(test_exception)
 
-    # Queue
-    bomb = Bomb.new
-    bomb.delay.blow_up test_exception
+    Bomb.new.delay.blow_up test_exception
 
-    expect {
-      Delayed::Worker.new.work_off.should == [0, 1]
-    }.to raise_error(Exception)
+    expect(Delayed::Worker.new.work_off).to eq [0, 1]
   end
 end
-
