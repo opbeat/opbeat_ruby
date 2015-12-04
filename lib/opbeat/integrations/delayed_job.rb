@@ -19,7 +19,7 @@ if defined?(Delayed)
               # Log error to Opbeat
               ::Opbeat.capture_exception(exception)
               # Make sure we propagate the failure!
-              raise exception
+              raise
             end
           end
         end
