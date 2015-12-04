@@ -6,6 +6,5 @@ gem "rspec"
 gem "simplecov"
 gem "delayed_job"
 gem "sidekiq", "~> 3.1.0"
-gem "opbeat", :path => "../"
 
 gemspec :path => "../"
