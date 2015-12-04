@@ -26,7 +26,7 @@ if defined? Sidekiq
         chain.add ::Opbeat::Integrations::Sidekiq
       end
     else
-      config.error_handlers << Proc.new { |ex, ctx| ::Opbeat.capture_exception(ex) }
+      config.error_handlers << Proc.new { |ex, ctx| ::Opbeat.capture_exception(ex, extra: ctx) }
     end
   end
 end
