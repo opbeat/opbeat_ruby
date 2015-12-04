@@ -1,5 +1,6 @@
 source "http://rubygems.org"
 
+gem "rack-cache", "~> 1.2"
 gem "i18n", "~> 0.6.11" # pin to <0.7 to support ruby 1.9.2
 gem "rails", "~> 3.1.0"
 gem "rake"
