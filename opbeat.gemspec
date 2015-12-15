@@ -19,10 +19,10 @@ Gem::Specification.new do |gem|
   gem.add_dependency "faraday", [">= 0.7.6", "< 0.10"]
   gem.add_dependency "multi_json", "~> 1.0"
 
-  gem.add_development_dependency "bundler", "~> 1.7"
-  gem.add_development_dependency "rake", "~> 10.0"
-  gem.add_development_dependency "rspec", ">= 2.14"
+  gem.add_development_dependency "bundler"
+  gem.add_development_dependency "rake"
+  gem.add_development_dependency "rspec"
   gem.add_development_dependency "simplecov"
   gem.add_development_dependency "delayed_job"
-  gem.add_development_dependency "sidekiq", "~> 2.17.0"
+  gem.add_development_dependency "sidekiq", "~> 3.5.3"
 end
